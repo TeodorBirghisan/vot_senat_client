@@ -51,7 +51,7 @@ class LoginFormState extends State<LoginForm> {
                     fixedSize: const Size(300, 50),
                     primary: Colors.black87,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10))),
+                        borderRadius: BorderRadius.circular(15))),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(

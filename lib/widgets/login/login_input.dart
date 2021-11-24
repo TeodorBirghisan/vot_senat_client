@@ -14,19 +14,29 @@ class LoginInputFied extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 2),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: Text(
                 title,
-                style: const TextStyle(fontSize: 14),
+                style: const TextStyle(fontSize: 15),
               )),
           TextFormField(
-              decoration: InputDecoration(
+            decoration: InputDecoration(
+                hintText: isPassword ? 'Type your password' : 'Type your email',
                 prefixIcon: isPassword
-                    ? const Icon(Icons.security)
-                    : const Icon(Icons.account_circle_rounded),
-                border: const OutlineInputBorder(),
-              ),
-              validator: checkEmptyField),
+                    ? const Icon(
+                        Icons.security,
+                        color: Colors.black87,
+                      )
+                    : const Icon(Icons.account_circle_rounded,
+                        color: Colors.black87),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(color: Colors.black87))),
+            validator: checkEmptyField,
+            obscureText: isPassword,
+          ),
         ]));
   }
 }
