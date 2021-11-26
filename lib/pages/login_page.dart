@@ -48,21 +48,25 @@ class LoginFormState extends State<LoginForm> {
               padding: const EdgeInsets.symmetric(vertical: 20),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    fixedSize: const Size(300, 50),
-                    primary: Colors.black87,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15))),
+                  fixedSize: const Size(300, 50),
+                  primary: Colors.black87,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Login in progress')),
+                      const SnackBar(
+                        content: Text('Login in progress'),
+                      ),
                     );
                   }
                 },
                 child: const Text('LOGIN'),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
