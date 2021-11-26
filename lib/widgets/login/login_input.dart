@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vot_senat_client/utils/validator.dart';
 
 class LoginInputFied extends StatelessWidget {
   final String title;
@@ -40,18 +41,11 @@ class LoginInputFied extends StatelessWidget {
                 borderSide: const BorderSide(color: Colors.black87),
               ),
             ),
-            validator: checkEmptyField,
+            validator: Validator.checkEmptyField,
             obscureText: isPassword,
           ),
         ],
       ),
     );
   }
-}
-
-String? checkEmptyField(String? fieldContent) {
-  if (fieldContent == null || fieldContent.isEmpty) {
-    return 'Fields cannot be empty!';
-  }
-  return null;
 }
