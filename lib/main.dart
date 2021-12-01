@@ -26,7 +26,7 @@ class App extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const SignupPage(),
+        home: const TodoPage(),
       ),
     );
   }
