@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vot_senat_client/bloc/todo_bloc/todo_bloc.dart';
 import 'package:vot_senat_client/pages/todo_page.dart';
 import 'package:vot_senat_client/pages/login_page.dart';
+import 'package:vot_senat_client/pages/signup_page.dart';
 
 void main() async {
   runApp(const App());
@@ -25,7 +26,7 @@ class App extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const TodoPage(),
+        home: const SignupPage(),
       ),
     );
   }
