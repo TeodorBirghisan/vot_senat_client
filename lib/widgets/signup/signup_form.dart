@@ -24,7 +24,7 @@ class _SignupFormState extends State<SignupForm> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: const [
               SignupInputField(
-                title: 'first Name',
+                title: 'first name',
                 fieldWidth: 170, //MediaQuery.of(context).size.width / 4,
                 inputIcon: Icon(
                   Icons.account_circle_rounded,
@@ -32,7 +32,7 @@ class _SignupFormState extends State<SignupForm> {
                 ),
               ),
               SignupInputField(
-                title: 'last Name',
+                title: 'last name',
                 fieldWidth: 170, //MediaQuery.of(context).size.width / 4,
                 inputIcon: Icon(
                   Icons.account_circle_rounded,

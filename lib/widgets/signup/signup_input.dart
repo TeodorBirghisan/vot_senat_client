@@ -19,7 +19,7 @@ class SignupInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: fieldWidth,
-      margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
