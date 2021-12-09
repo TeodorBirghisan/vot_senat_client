@@ -6,6 +6,8 @@ import 'package:vot_senat_client/bloc/todo_bloc/todo_event.dart';
 import 'package:vot_senat_client/bloc/todo_bloc/todo_state.dart';
 import 'package:vot_senat_client/widgets/todo_list/todo_list.dart';
 
+import '../routes.dart';
+
 class TodoPage extends StatefulWidget {
   const TodoPage({Key? key}) : super(key: key);
 
@@ -26,30 +28,48 @@ class _TodoPageState extends State<TodoPage> {
       appBar: AppBar(
         title: const Text("Todo App"),
       ),
-      body: BlocBuilder<TodoBloc, TodoState>(
-        builder: (context, todoState) {
-          if (todoState is TodoLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (todoState is TodoGetFailure) {
-            return Center(
-              child: Row(
-                children: const [
-                  Icon(Icons.warning),
-                  Text("Your todo tasks could not be loaded correctly"),
-                ],
-              ),
-            );
-          }
-          if (todoState is TodoGetSuccess) {
-            return TodoList(tasks: todoState.tasks);
-          }
-          return const Center(
-            child: Text("Ooops, you reached an unhandled state"),
-          );
-        },
+      body: Column(
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                RoutesEnum.HOME.toString(),
+                    (route) => false,
+              );
+            },
+            child: Center(
+              child: Text("Go to home"),
+            ),
+          ),
+          Expanded(
+              child:BlocBuilder<TodoBloc, TodoState>(
+                builder: (context, todoState) {
+                  if (todoState is TodoLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (todoState is TodoGetFailure) {
+                    return Center(
+                      child: Row(
+                        children: const [
+                          Icon(Icons.warning),
+                          Text("Your todo tasks could not be loaded correctly"),
+                        ],
+                      ),
+                    );
+                  }
+                  if (todoState is TodoGetSuccess) {
+                    return TodoList(tasks: todoState.tasks);
+                  }
+                  return const Center(
+                    child: Text("Ooops, you reached an unhandled state"),
+                  );
+                },
+              )
+          ),
+        ],
       ),
     );
   }
