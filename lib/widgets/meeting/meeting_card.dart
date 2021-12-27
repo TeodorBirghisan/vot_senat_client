@@ -37,37 +37,24 @@ class MeetingCard extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(10),
-              child: Ink(
-                width: 200,
-                height: 40,
-                child: InkWell(
-                  splashColor: Colors.red,
-                  // When the user taps the button, show a snackbar.
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Waiting for presenter...'),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.blue),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
-                          'Join',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white),
-                        )
-                      ],
-                    ),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(200, 40),
+                  primary: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
                   ),
                 ),
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Waiting for presenter...'),
+                    ),
+                  );
+                },
+                child: const Text('JOIN'),
               ),
-            )
+            ),
           ],
         ),
       ),
