@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vot_senat_client/bloc/todo_bloc/todo_bloc.dart';
 import 'package:vot_senat_client/pages/todo_page.dart';
+import 'package:vot_senat_client/pages/current_available_meetings_page.dart';
 
 void main() async {
   runApp(const App());
