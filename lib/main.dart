@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vot_senat_client/bloc/todo_bloc/todo_bloc.dart';
 import 'package:vot_senat_client/bloc/topic_bloc/topic_bloc.dart';
 import 'package:vot_senat_client/pages/available_meetings/available_meetings_page.dart';
 import 'package:vot_senat_client/pages/login_page.dart';
