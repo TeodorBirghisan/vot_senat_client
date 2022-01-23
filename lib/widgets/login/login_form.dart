@@ -42,9 +42,11 @@ class LoginFormState extends State<LoginForm> {
                 ),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
+                    Navigator.pushNamedAndRemoveUntil(context, "/available-meetings", (route) => false);
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Login in progress'),
+                        content: Text('Login successfull'),
+                        backgroundColor: Colors.green,
                       ),
                     );
                   }
