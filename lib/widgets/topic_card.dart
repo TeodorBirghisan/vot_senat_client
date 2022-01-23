@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:vot_senat_client/model/meeting.dart';
-import 'package:vot_senat_client/pages/topic_page/topic_page.dart';
+import 'package:vot_senat_client/model/topic.dart';
 
-class MeetingCard extends StatelessWidget {
-  final Meeting meeting;
+class TopicCard extends StatelessWidget {
+  final Topic topic;
 
-  const MeetingCard({
+  const TopicCard({
     Key? key,
-    required this.meeting,
+    required this.topic,
   }) : super(key: key);
 
   @override
@@ -27,7 +26,7 @@ class MeetingCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
               child: Text(
-                meeting.title ?? "",
+                topic.content ?? "",
                 textAlign: TextAlign.left,
                 style: Theme.of(context).textTheme.subtitle2,
               ),
@@ -39,6 +38,23 @@ class MeetingCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.redAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Se sterge...'),
+                        ),
+                      );
+                    },
+                    child: const Text('Sterge'),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         primary: Colors.blueAccent,
                         shape: RoundedRectangleBorder(
@@ -46,14 +62,13 @@ class MeetingCard extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TopicPage(meeting: meeting),
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Topicul a intrat in votare...'),
                           ),
                         );
                       },
-                      child: const Text('Join')),
+                      child: const Text('Activeaza')),
                 ],
               ),
             ),

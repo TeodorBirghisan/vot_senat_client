@@ -13,8 +13,8 @@ class TodoRepo {
       //Done only for exemplifications of a request taking time
       await Future.delayed(const Duration(seconds: 3));
       return response;
-    } on Exception catch (e) {
-      throw e;
+    } on Exception {
+      rethrow;
     }
   }
 }
