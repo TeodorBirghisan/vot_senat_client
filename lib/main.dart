@@ -5,6 +5,7 @@ import 'package:vot_senat_client/pages/available_meetings/available_meetings_pag
 import 'package:vot_senat_client/pages/login_page.dart';
 
 import 'bloc/meetings_bloc/meetings_bloc.dart';
+import 'bloc/todo_bloc/todo_bloc.dart';
 
 void main() async {
   runApp(const App());
@@ -35,7 +36,8 @@ class App extends StatelessWidget {
         ),
         initialRoute: "/available-meetings",
         routes: {
-          "/available-meetings": (BuildContext context) => const AvailableMeetingsPage(),
+          "/available-meetings": (BuildContext context) =>
+              const AvailableMeetingsPage(),
           "/login": (BuildContext context) => const LoginPage(),
         },
       ),
