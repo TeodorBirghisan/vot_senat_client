@@ -1,3 +1,6 @@
+## You can test the app here
+https://unitbv-senat.herokuapp.com/#/available-meetings
+
 # vot_senat_client
 
 A new Flutter project.
