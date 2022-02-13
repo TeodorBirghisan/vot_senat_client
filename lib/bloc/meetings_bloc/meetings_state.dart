@@ -29,3 +29,12 @@ class MeetingCreateSuccess extends MeetingsSuccess {
 }
 
 class MeetingCreateError extends MeetingsError {}
+
+class MeetingDeleteOneSuccess extends MeetingsSuccess {
+  final int meetingId;
+  MeetingDeleteOneSuccess(this.meetingId);
+}
+
+class MeetingDeleteOneError extends MeetingsError {}
+
+class MeetingDeleteOneLoading extends MeetingsLoading {}
