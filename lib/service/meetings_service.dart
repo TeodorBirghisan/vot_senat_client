@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:http/http.dart';
 import 'package:vot_senat_client/model/meeting.dart';

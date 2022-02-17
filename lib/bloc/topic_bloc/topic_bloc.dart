@@ -13,6 +13,7 @@ class TopicBloc extends Bloc<TopicEvent, TopicState> {
   TopicBloc() : super(TopicInit()) {
     on<TopicGetAll>(_onGetAll);
     on<TopicCreate>(_onCreate);
+    on<TopicDelete>(_onDelete);
   }
 
   FutureOr<void> _onGetAll(TopicGetAll event, Emitter<TopicState> emit) async {
@@ -31,13 +32,27 @@ class TopicBloc extends Bloc<TopicEvent, TopicState> {
   FutureOr<void> _onCreate(TopicCreate event, Emitter<TopicState> emit) async {
     emit(TopicCreateLoading());
 
-    Response response = await TopicService.instance.create(event.topic, event.meeting);
+    Response response =
+        await TopicService.instance.create(event.topic, event.meeting);
 
     if (response.statusCode == HttpStatus.created) {
       Topic data = TopicService.instance.deserializeOne(response);
       emit(TopicCreateSuccess(data));
     } else {
       emit(TopicGetAllError());
+    }
+  }
+
+  FutureOr<void> _onDelete(TopicDelete event, Emitter<TopicState> emit) async {
+    emit(TopicDeleteLoading());
+
+    Response response =
+        await TopicService.instance.deleteOne(event.topicId, event.meetingId);
+
+    if (response.statusCode == HttpStatus.ok) {
+      // TODO: Get data
+    } else {
+      emit(TopicDeleteError());
     }
   }
 }
