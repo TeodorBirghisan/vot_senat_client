@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:provider/src/provider.dart';
+import 'package:vot_senat_client/bloc/topic_bloc/topic_bloc.dart';
+import 'package:vot_senat_client/bloc/topic_bloc/topic_event.dart';
+import 'package:vot_senat_client/model/meeting.dart';
 import 'package:vot_senat_client/model/topic.dart';
 
-class TopicCard extends StatelessWidget {
+class TopicCard extends StatefulWidget {
   final Topic topic;
+  final int meetingId;
 
   const TopicCard({
     Key? key,
     required this.topic,
+    required this.meetingId,
   }) : super(key: key);
 
+  @override
+  State<TopicCard> createState() => _TopicCardState();
+}
+
+class _TopicCardState extends State<TopicCard> {
   @override
   Widget build(BuildContext context) {
     return PhysicalModel(
@@ -26,7 +37,7 @@ class TopicCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
               child: Text(
-                topic.content ?? "",
+                widget.topic.content ?? "",
                 textAlign: TextAlign.left,
                 style: Theme.of(context).textTheme.subtitle2,
               ),
@@ -45,6 +56,10 @@ class TopicCard extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
+                      TopicEvent event =
+                          TopicDelete(widget.topic.id!, widget.meetingId);
+                      context.read<TopicBloc>().add(event);
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Se sterge...'),
