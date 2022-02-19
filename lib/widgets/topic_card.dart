@@ -55,17 +55,33 @@ class _TopicCardState extends State<TopicCard> {
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
-                    onPressed: () {
-                      TopicEvent event =
-                          TopicDelete(widget.topic.id!, widget.meetingId);
-                      context.read<TopicBloc>().add(event);
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Se sterge...'),
-                        ),
-                      );
-                    },
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: Text('Delete ${widget.topic.content} ?'),
+                        content: const Text('Are you sure you want to delete?'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'Cancel'),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              TopicEvent event = TopicDelete(
+                                  widget.topic.id!, widget.meetingId);
+                              context.read<TopicBloc>().add(event);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Se sterge...'),
+                                ),
+                              );
+                              Navigator.pop(context, 'OK');
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    ),
                     child: const Text('Sterge'),
                   ),
                   const SizedBox(width: 8),

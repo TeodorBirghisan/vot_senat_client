@@ -148,5 +148,11 @@ class _TopicState extends State<TopicPage> {
         // meetings.add(state.data);
       });
     }
+
+    if (state is TopicDeleteSuccess) {
+      setState(() {
+        topics.removeWhere((topic) => topic.id == state.topicId);
+      });
+    }
   }
 }

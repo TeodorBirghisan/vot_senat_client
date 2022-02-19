@@ -50,7 +50,8 @@ class TopicBloc extends Bloc<TopicEvent, TopicState> {
         await TopicService.instance.deleteOne(event.topicId, event.meetingId);
 
     if (response.statusCode == HttpStatus.ok) {
-      // TODO: Get data
+      int? data = TopicService.instance.deserializeId(response);
+      emit(TopicDeleteSuccess(data));
     } else {
       emit(TopicDeleteError());
     }

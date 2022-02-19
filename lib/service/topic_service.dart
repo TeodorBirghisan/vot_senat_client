@@ -40,7 +40,9 @@ class TopicService {
     Uri url = Uri.parse("${Api.server}/topics/$meetingId");
 
     try {
-      Response response = await delete(url, body: topicId);
+      Response response = await delete(url,
+          headers: {"Content-Type": "application/json"},
+          body: json.encode(<String, int>{"topicId": topicId}));
       return response;
     } on Exception {
       rethrow;
@@ -57,5 +59,10 @@ class TopicService {
   Topic deserializeOne(Response response) {
     String body = response.body;
     return Topic.fromJson(json.decode(body));
+  }
+
+  int deserializeId(Response response) {
+    String body = response.body;
+    return json.decode(body);
   }
 }
