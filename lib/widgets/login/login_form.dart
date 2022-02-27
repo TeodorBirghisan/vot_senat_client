@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vot_senat_client/bloc/user_bloc/user_bloc.dart';
+import 'package:vot_senat_client/bloc/user_bloc/user_event.dart';
+import 'package:vot_senat_client/utils/form_field_data.dart';
+import 'package:vot_senat_client/utils/form_validators.dart';
 import 'package:vot_senat_client/widgets/login/login_input.dart';
 
 class LoginForm extends StatefulWidget {
@@ -12,6 +17,28 @@ class LoginForm extends StatefulWidget {
 
 class LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
+  late List<FormFieldData> fields;
+  late Map<String, TextEditingController> controllers;
+
+  @override
+  void initState() {
+    fields = [
+      FormFieldData(
+        dataKey: "email",
+        label: "Email",
+        hintText: "",
+        validator: FormValidators.notEmptyValidator,
+      ),
+      FormFieldData(
+        dataKey: "password",
+        label: "Description",
+        hintText: "",
+        validator: FormValidators.notEmptyValidator,
+        isPassword: true,
+      ),
+    ];
+    controllers = {};
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +48,32 @@ class LoginFormState extends State<LoginForm> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const LoginInputFied(
-            title: 'Username',
-            isPassword: false,
-          ),
-          const LoginInputFied(
-            title: 'Password',
-            isPassword: true,
-          ),
+          const SizedBox(height: 32),
+          if (null != fields)
+            ...fields.map((field) {
+              var controller = controllers.putIfAbsent(
+                field.dataKey,
+                () {
+                  return TextEditingController();
+                },
+              );
+              return Column(
+                children: [
+                  Text(field.label),
+                  const SizedBox(height: 4),
+                  TextFormField(
+                    controller: controller,
+                    validator: field.validator,
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      hintText: field.hintText,
+                    ),
+                    obscureText: field.isPassword ?? false,
+                  ),
+                  const SizedBox(height: 8),
+                ],
+              );
+            }),
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),
@@ -42,13 +87,10 @@ class LoginFormState extends State<LoginForm> {
                 ),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    Navigator.pushNamedAndRemoveUntil(context, "/available-meetings", (route) => false);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Login successfull'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
+                    BlocProvider.of<UserBloc>(context).add(LoginUser(
+                      controllers['email']!.text,
+                      controllers['password']!.text,
+                    ));
                   }
                 },
                 child: const Text('LOGIN'),
