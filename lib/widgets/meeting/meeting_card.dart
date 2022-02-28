@@ -24,13 +24,44 @@ class MeetingCard extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-              child: Text(
-                meeting.title ?? "",
-                textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.subtitle2,
-              ),
+            Stack(
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+                    child: Text(
+                      meeting.title ?? "",
+                      textAlign: TextAlign.left,
+                      style: Theme.of(context).textTheme.subtitle2,
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: Colors.red,
+                    ),
+                    height: 35,
+                    width: 35,
+                    child: IconButton(
+                      icon: Icon(Icons.delete),
+                      alignment: Alignment.center,
+                      iconSize: 20,
+                      color: Colors.white,
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Se sterge...'),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
             const Divider(),
             Padding(

@@ -23,13 +23,44 @@ class TopicCard extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-              child: Text(
-                topic.content ?? "",
-                textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.subtitle2,
-              ),
+            Stack(
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+                    child: Text(
+                      topic.content ?? "",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.subtitle2,
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: Colors.red,
+                    ),
+                    height: 35,
+                    width: 35,
+                    child: IconButton(
+                      icon: Icon(Icons.delete),
+                      alignment: Alignment.center,
+                      iconSize: 20,
+                      color: Colors.white,
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Se sterge...'),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
             const Divider(),
             Padding(
@@ -37,22 +68,6 @@ class TopicCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.redAccent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Se sterge...'),
-                        ),
-                      );
-                    },
-                    child: const Text('Sterge'),
-                  ),
                   const SizedBox(width: 8),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
