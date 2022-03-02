@@ -24,11 +24,39 @@ class TopicCard extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-              child: Text(
-                topic.content ?? "",
-                textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.subtitle2,
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(width: 24),
+                  Text(
+                    topic.content ?? "",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.subtitle2,
+                  ),
+                  Material(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(24),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(24),
+                      child: const Padding(
+                        padding: EdgeInsets.all(6.0),
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                      ),
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Se sterge...'),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
             const Divider(),
@@ -37,22 +65,6 @@ class TopicCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.redAccent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Se sterge...'),
-                        ),
-                      );
-                    },
-                    child: const Text('Sterge'),
-                  ),
                   const SizedBox(width: 8),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(

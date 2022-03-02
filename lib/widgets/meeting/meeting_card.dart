@@ -25,11 +25,38 @@ class MeetingCard extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-              child: Text(
-                meeting.title ?? "",
-                textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.subtitle2,
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(width: 24),
+                  Text(
+                    meeting.title ?? "",
+                    style: Theme.of(context).textTheme.subtitle2,
+                  ),
+                  Material(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(24),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(24),
+                      child: const Padding(
+                        padding: EdgeInsets.all(6.0),
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                      ),
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Se sterge...'),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
             const Divider(),
