@@ -23,34 +23,31 @@ class TopicCard extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         child: Column(
           children: [
-            Stack(
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-                    child: Text(
-                      topic.content ?? "",
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.subtitle2,
-                    ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(width: 24),
+                  Text(
+                    topic.content ?? "",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.subtitle2,
                   ),
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: Colors.red,
-                    ),
-                    height: 35,
-                    width: 35,
-                    child: IconButton(
-                      icon: Icon(Icons.delete),
-                      alignment: Alignment.center,
-                      iconSize: 20,
-                      color: Colors.white,
-                      onPressed: () {
+                  Material(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(24),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(24),
+                      child: const Padding(
+                        padding: EdgeInsets.all(6.0),
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                      ),
+                      onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Se sterge...'),
@@ -59,8 +56,8 @@ class TopicCard extends StatelessWidget {
                       },
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             const Divider(),
             Padding(
