@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vot_senat_client/model/meeting.dart';
 import 'package:vot_senat_client/pages/topic_page/topic_page.dart';
+import 'package:intl/intl.dart';
 
 class MeetingCard extends StatelessWidget {
   final Meeting meeting;
@@ -55,6 +56,24 @@ class MeetingCard extends StatelessWidget {
                         );
                       },
                     ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.schedule,
+                    color: Colors.black,
+                    size: 18,
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    DateFormat('dd-MM-yyyy - kk:mm').format(meeting.startDate ?? DateTime.now()),
                   ),
                 ],
               ),
