@@ -108,7 +108,7 @@ class MeetingCard extends StatelessWidget {
   }
 
   String _computeRemainingTime(DateTime startDate) {
-    int hours = (DateTime.now().difference(startDate).inHours) * (-1);
+    int hours = (startDate.difference(DateTime.now()).inHours);
     int minutes = DateTime.now().difference(startDate).inMinutes % 60;
     return "Incepe in $hours ore si $minutes minute ";
   }
