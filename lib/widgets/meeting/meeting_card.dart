@@ -66,15 +66,13 @@ class MeetingCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.schedule,
                     color: Colors.black,
                     size: 18,
                   ),
-                  SizedBox(width: 8),
-                  Text(
-                    DateFormat('dd-MM-yyyy - kk:mm').format(meeting.startDate ?? DateTime.now()),
-                  ),
+                  const SizedBox(width: 8),
+                  _buildTimeText(meeting.startDate),
                 ],
               ),
             ),
@@ -107,5 +105,21 @@ class MeetingCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _computeRemainingTime(DateTime startDate) {
+    int hours = (DateTime.now().difference(startDate).inHours) * (-1);
+    int minutes = DateTime.now().difference(startDate).inMinutes % 60;
+    return "Incepe in $hours ore si $minutes minute ";
+  }
+
+  Widget _buildTimeText(DateTime? startDate) {
+    if (startDate == null) {
+      return Text("Data nu a putut fi calculata");
+    }
+    if (DateTime.now().difference(startDate).inHours > 24) {
+      return Text(DateFormat('dd-MM-yyyy - kk:mm').format(startDate));
+    }
+    return Text(_computeRemainingTime(startDate));
   }
 }
