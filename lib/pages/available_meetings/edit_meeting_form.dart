@@ -110,7 +110,7 @@ class _EditMeetingFormState extends State<EditMeetingForm> {
                   for (MapEntry<String, TextEditingController> entry in controllers.entries) entry.key: entry.value.text,
                 };
                 Meeting formData = Meeting.fromJson(result);
-                formData.startDate = startDate;
+                formData.startDate = startDate.toUtc();
                 // if (widget.order != null) {
                 //   formData.id = widget.order!.id;
                 // }
