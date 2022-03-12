@@ -74,7 +74,7 @@ class _EditTopicFormState extends State<EditTopicForm> {
                       Text(field.label),
                       const SizedBox(height: 4),
                       Container(
-                        width: constraints.maxWidth < 450 ? constraints.maxWidth * 0.8 : constraints.maxWidth * 0.6,
+                        width: constraints.maxWidth < 450 ? constraints.maxWidth * 0.8 : constraints.maxWidth * 0.4,
                         child: TextFormField(
                           controller: controller,
                           validator: field.validator,
