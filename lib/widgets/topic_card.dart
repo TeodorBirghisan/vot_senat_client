@@ -74,10 +74,71 @@ class TopicCard extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Topicul a intrat in votare...'),
-                          ),
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: new Text(
+                                topic.content ?? "",
+                                textAlign: TextAlign.center,
+                              ),
+                              content: new Text(
+                                "Esti sigur ca vrei sa activezi votarea pentru acest topic",
+                                textAlign: TextAlign.center,
+                              ),
+                              actions: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Material(
+                                        color: Colors.white,
+                                        child: InkWell(
+                                          child: Text(
+                                            "Anuleaza",
+                                            style: TextStyle(color: Colors.blueAccent),
+                                          ),
+                                          onTap: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ),
+                                      // ElevatedButton(
+                                      //   style: ElevatedButton.styleFrom(
+                                      //     primary: Colors.white,
+                                      //   ),
+                                      //   onPressed: () {
+                                      //     Navigator.of(context).pop();
+                                      //   },
+                                      //   child: Text(
+                                      //     "Anuleaza",
+                                      //     style: TextStyle(color: Colors.blueAccent),
+                                      //   ),
+                                      // ),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          primary: Colors.blueAccent,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text('Topicul a intrat in votare...'),
+                                            ),
+                                          );
+                                        },
+                                        child: Text("Activeaza"),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         );
                       },
                       child: const Text('Activeaza')),
