@@ -97,7 +97,7 @@ class _EditMeetingFormState extends State<EditMeetingForm> {
                 }),
               const SizedBox(height: 8),
               Container(
-                width: constraints.maxWidth < 450 ? constraints.maxWidth * 0.8 : constraints.maxWidth * 0.6,
+                width: constraints.maxWidth < 450 ? constraints.maxWidth * 0.8 : constraints.maxWidth * 0.4,
                 child: Align(
                   alignment: Alignment.center,
                   child: DateTimePicker(
