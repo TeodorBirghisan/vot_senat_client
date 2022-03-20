@@ -90,14 +90,16 @@ class TopicCard extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Material(
                                         color: Colors.white,
                                         child: InkWell(
                                           child: Text(
                                             "Anuleaza",
-                                            style: TextStyle(color: Colors.blueAccent),
+                                            style: TextStyle(
+                                                color: Colors.blueAccent),
                                           ),
                                           onTap: () {
                                             Navigator.of(context).pop();
@@ -120,14 +122,17 @@ class TopicCard extends StatelessWidget {
                                         style: ElevatedButton.styleFrom(
                                           primary: Colors.blueAccent,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(15),
+                                            borderRadius:
+                                                BorderRadius.circular(15),
                                           ),
                                         ),
                                         onPressed: () {
                                           Navigator.of(context).pop();
-                                          ScaffoldMessenger.of(context).showSnackBar(
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
                                             const SnackBar(
-                                              content: Text('Topicul a intrat in votare...'),
+                                              content: Text(
+                                                  'Topicul a intrat in votare...'),
                                             ),
                                           );
                                         },
