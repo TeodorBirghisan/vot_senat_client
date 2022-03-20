@@ -54,7 +54,8 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
                   itemCount: meetings.length,
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 5),
                       child: MeetingCard(
                         meeting: meetings[index],
                       ),
@@ -125,6 +126,12 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
     if (state is MeetingCreateSuccess) {
       setState(() {
         meetings.add(state.data);
+      });
+    }
+
+    if (state is MeetingDeleteOneSuccess) {
+      setState(() {
+        meetings.removeWhere((meeting) => meeting.id == state.meetingId);
       });
     }
   }

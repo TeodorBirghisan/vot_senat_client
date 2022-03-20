@@ -22,7 +22,7 @@ class MeetingsService {
 
   Future<Response> create(Meeting meeting) async {
     //TODO add user to request whne auth is implemented
-    Uri url = Uri.parse("${Api.server}/meetings/1");
+    Uri url = Uri.parse("${Api.server}/meetings/8");
 
     try {
       Response response = await post(
@@ -35,13 +35,31 @@ class MeetingsService {
     }
   }
 
+  Future<Response> deleteOne(int meetingId) async {
+    Uri url = Uri.parse("${Api.server}/meetings/$meetingId");
+
+    try {
+      Response response = await delete(url);
+      return response;
+    } on Exception {
+      rethrow;
+    }
+  }
+
   List<Meeting> deserializeAll(Response response) {
     String body = response.body;
-    return (json.decode(body) as List).map((data) => Meeting.fromJson(data)).toList();
+    return (json.decode(body) as List)
+        .map((data) => Meeting.fromJson(data))
+        .toList();
   }
 
   Meeting deserializeOne(Response response) {
     String body = response.body;
     return Meeting.fromJson(json.decode(body));
+  }
+
+  int deserializeId(Response response) {
+    String body = response.body;
+    return json.decode(body);
   }
 }

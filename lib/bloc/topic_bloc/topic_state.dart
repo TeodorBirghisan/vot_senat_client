@@ -29,3 +29,12 @@ class TopicCreateSuccess extends TopicSuccess {
 }
 
 class TopicCreateError extends TopicError {}
+
+class TopicDeleteSuccess extends TopicSuccess {
+  final int topicId;
+  TopicDeleteSuccess(this.topicId);
+}
+
+class TopicDeleteLoading extends TopicLoading {}
+
+class TopicDeleteError extends TopicError {}

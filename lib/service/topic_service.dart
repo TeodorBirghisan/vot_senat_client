@@ -36,13 +36,33 @@ class TopicService {
     }
   }
 
+  Future<Response> deleteOne(int topicId, int meetingId) async {
+    Uri url = Uri.parse("${Api.server}/topics/$meetingId");
+
+    try {
+      Response response = await delete(url,
+          headers: {"Content-Type": "application/json"},
+          body: json.encode(<String, int>{"topicId": topicId}));
+      return response;
+    } on Exception {
+      rethrow;
+    }
+  }
+
   List<Topic> deserializeAll(Response response) {
     String body = response.body;
-    return (json.decode(body) as List).map((data) => Topic.fromJson(data)).toList();
+    return (json.decode(body) as List)
+        .map((data) => Topic.fromJson(data))
+        .toList();
   }
 
   Topic deserializeOne(Response response) {
     String body = response.body;
     return Topic.fromJson(json.decode(body));
+  }
+
+  int deserializeId(Response response) {
+    String body = response.body;
+    return json.decode(body);
   }
 }

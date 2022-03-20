@@ -13,9 +13,11 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
   MeetingsBloc() : super(MeetingsInit()) {
     on<MeetingsGetAll>(_onGetAll);
     on<MeetingsCreate>(_onCreate);
+    on<MeetingsDeleteOne>(_onDeleteOne);
   }
 
-  FutureOr<void> _onGetAll(MeetingsGetAll event, Emitter<MeetingsState> emit) async {
+  FutureOr<void> _onGetAll(
+      MeetingsGetAll event, Emitter<MeetingsState> emit) async {
     emit(MeetingGetAllLoading());
 
     Response response = await MeetingsService.instance.getAll();
@@ -28,7 +30,8 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
     }
   }
 
-  FutureOr<void> _onCreate(MeetingsCreate event, Emitter<MeetingsState> emit) async {
+  FutureOr<void> _onCreate(
+      MeetingsCreate event, Emitter<MeetingsState> emit) async {
     emit(MeetingCreateLoading());
 
     Response response = await MeetingsService.instance.create(event.data);
@@ -38,6 +41,21 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
       emit(MeetingCreateSuccess(data));
     } else {
       emit(MeetingGetAllError());
+    }
+  }
+
+  FutureOr<void> _onDeleteOne(
+      MeetingsDeleteOne event, Emitter<MeetingsState> emit) async {
+    emit(MeetingDeleteOneLoading());
+
+    Response response =
+        await MeetingsService.instance.deleteOne(event.meetingId);
+
+    if (response.statusCode == HttpStatus.ok) {
+      int? data = MeetingsService.instance.deserializeId(response);
+      emit(MeetingDeleteOneSuccess(data));
+    } else {
+      emit(MeetingDeleteOneError());
     }
   }
 }

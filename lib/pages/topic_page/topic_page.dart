@@ -70,15 +70,18 @@ class _TopicState extends State<TopicPage> {
                   itemCount: topics.length,
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 5),
                       child: TopicCard(
+                        meetingId: widget.meeting.id!,
                         topic: topics[index],
                       ),
                     );
                   },
                 ),
                 onRefresh: () async {
-                  BlocProvider.of<TopicBloc>(context).add(TopicGetAll(widget.meeting));
+                  BlocProvider.of<TopicBloc>(context)
+                      .add(TopicGetAll(widget.meeting));
                   return;
                 },
               );
@@ -143,6 +146,12 @@ class _TopicState extends State<TopicPage> {
       setState(() {
         topics.add(state.data);
         // meetings.add(state.data);
+      });
+    }
+
+    if (state is TopicDeleteSuccess) {
+      setState(() {
+        topics.removeWhere((topic) => topic.id == state.topicId);
       });
     }
   }

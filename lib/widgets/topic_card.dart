@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:provider/src/provider.dart';
+import 'package:vot_senat_client/bloc/topic_bloc/topic_bloc.dart';
+import 'package:vot_senat_client/bloc/topic_bloc/topic_event.dart';
+import 'package:vot_senat_client/model/meeting.dart';
 import 'package:vot_senat_client/model/topic.dart';
 
-class TopicCard extends StatelessWidget {
+class TopicCard extends StatefulWidget {
   final Topic topic;
+  final int meetingId;
 
   const TopicCard({
     Key? key,
     required this.topic,
+    required this.meetingId,
   }) : super(key: key);
 
+  @override
+  State<TopicCard> createState() => _TopicCardState();
+}
+
+class _TopicCardState extends State<TopicCard> {
   @override
   Widget build(BuildContext context) {
     return PhysicalModel(
@@ -65,6 +76,42 @@ class TopicCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.redAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: Text('Delete ${widget.topic.content} ?'),
+                        content: const Text('Are you sure you want to delete?'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'Cancel'),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              TopicEvent event = TopicDelete(
+                                  widget.topic.id!, widget.meetingId);
+                              context.read<TopicBloc>().add(event);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Se sterge...'),
+                                ),
+                              );
+                              Navigator.pop(context, 'OK');
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    ),
+                    child: const Text('Sterge'),
+                  ),
                   const SizedBox(width: 8),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(

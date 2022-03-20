@@ -10,3 +10,8 @@ class MeetingsCreate extends MeetingsEvent {
   Meeting data;
   MeetingsCreate(this.data);
 }
+
+class MeetingsDeleteOne extends MeetingsEvent {
+  int meetingId;
+  MeetingsDeleteOne(this.meetingId);
+}
