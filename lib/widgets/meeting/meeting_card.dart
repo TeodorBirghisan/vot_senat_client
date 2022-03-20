@@ -45,15 +45,6 @@ class _MeetingCardState extends State<MeetingCard> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-              child: Text(
-                widget.meeting.title ?? "",
-                textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.subtitle2,
-              ),
-            ),
-            const Divider(),
-            Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -75,45 +66,35 @@ class _MeetingCardState extends State<MeetingCard> {
                           color: Colors.white,
                           size: 18,
                         ),
-                      );
-                    },
-                    child: const Text('Join'),
-                  ),
-                  const SizedBox(
-                    width: 25,
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.red[600],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
                       ),
-                      onTap: ()=> showDialog(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: Text('Delete ${widget.meeting.title} ?'),
-                        content: const Text('Are you sure you want to delete?'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'Cancel'),
-                            child: const Text('Cancel'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              MeetingsEvent event =
-                                  MeetingsDeleteOne(widget.meeting.id!);
-                              context.read<MeetingsBloc>().add(event);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  backgroundColor: Colors.green,
-                                  content: Text('Processing Data'),
-                                ),
-                              );
-                              Navigator.pop(context, 'OK');
-                            },
-                            child: const Text('OK'),
-                          ),
-                        ],
+                      onTap: () => showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: Text('Delete ${widget.meeting.title} ?'),
+                          content:
+                              const Text('Are you sure you want to delete?'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'Cancel'),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                MeetingsEvent event =
+                                    MeetingsDeleteOne(widget.meeting.id!);
+                                context.read<MeetingsBloc>().add(event);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    backgroundColor: Colors.green,
+                                    content: Text('Processing Data'),
+                                  ),
+                                );
+                                Navigator.pop(context, 'OK');
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -144,21 +125,23 @@ class _MeetingCardState extends State<MeetingCard> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.blueAccent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.blueAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
                         ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => TopicPage(meeting: widget.meeting),
-                            ),
-                          );
-                        },
-                        child: const Text('Join')),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                TopicPage(meeting: widget.meeting),
+                          ),
+                        );
+                      },
+                      child: const Text('Join'),
+                    ),
                   ],
                 ),
               ),

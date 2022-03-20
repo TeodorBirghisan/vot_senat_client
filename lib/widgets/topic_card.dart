@@ -41,7 +41,7 @@ class _TopicCardState extends State<TopicCard> {
                 children: [
                   const SizedBox(width: 24),
                   Text(
-                    topic.content ?? "",
+                    widget.topic.content ?? "",
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.subtitle2,
                   ),
@@ -58,13 +58,34 @@ class _TopicCardState extends State<TopicCard> {
                           size: 18,
                         ),
                       ),
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Se sterge...'),
-                          ),
-                        );
-                      },
+                      onTap: () => showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: Text('Delete ${widget.topic.content} ?'),
+                          content:
+                              const Text('Are you sure you want to delete?'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'Cancel'),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                TopicEvent event = TopicDelete(
+                                    widget.topic.id!, widget.meetingId);
+                                context.read<TopicBloc>().add(event);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Se sterge...'),
+                                  ),
+                                );
+                                Navigator.pop(context, 'OK');
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -77,43 +98,6 @@ class _TopicCardState extends State<TopicCard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.redAccent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                    onPressed: () => showDialog(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: Text('Delete ${widget.topic.content} ?'),
-                        content: const Text('Are you sure you want to delete?'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'Cancel'),
-                            child: const Text('Cancel'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              TopicEvent event = TopicDelete(
-                                  widget.topic.id!, widget.meetingId);
-                              context.read<TopicBloc>().add(event);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Se sterge...'),
-                                ),
-                              );
-                              Navigator.pop(context, 'OK');
-                            },
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      ),
-                    ),
-                    child: const Text('Sterge'),
-                  ),
-                  const SizedBox(width: 8),
-                  ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         primary: Colors.blueAccent,
                         shape: RoundedRectangleBorder(
@@ -125,11 +109,11 @@ class _TopicCardState extends State<TopicCard> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: new Text(
-                                topic.content ?? "",
+                              title: Text(
+                                widget.topic.content ?? "",
                                 textAlign: TextAlign.center,
                               ),
-                              content: new Text(
+                              content: const Text(
                                 "Esti sigur ca vrei sa activezi votarea pentru acest topic",
                                 textAlign: TextAlign.center,
                               ),
@@ -143,7 +127,7 @@ class _TopicCardState extends State<TopicCard> {
                                       Material(
                                         color: Colors.white,
                                         child: InkWell(
-                                          child: Text(
+                                          child: const Text(
                                             "Anuleaza",
                                             style: TextStyle(
                                                 color: Colors.blueAccent),
@@ -183,7 +167,7 @@ class _TopicCardState extends State<TopicCard> {
                                             ),
                                           );
                                         },
-                                        child: Text("Activeaza"),
+                                        child: const Text("Activeaza"),
                                       ),
                                     ],
                                   ),
