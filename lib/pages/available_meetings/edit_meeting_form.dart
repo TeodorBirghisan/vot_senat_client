@@ -51,37 +51,67 @@ class _EditMeetingFormState extends State<EditMeetingForm> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: Column(
-        children: [
-          const SizedBox(height: 32),
-          if (null != fields)
-            ...fields.map((field) {
-              var controller = controllers.putIfAbsent(
-                field.dataKey,
-                () {
-                  // if (widget.meeting != null) {
-                  //   Map<String, dynamic> json = widget.order!.toJson();
-                  //   return TextEditingController.fromValue(
-                  //     TextEditingValue(
-                  //       text: json[field.dataKey],
-                  //     ),
-                  //   );
-                  // }
+      child: Center(
+        child: LayoutBuilder(builder: (context, constraints) {
+          return Column(
+            children: [
+              const SizedBox(height: 10),
+              if (null != fields)
+                ...fields.map((field) {
+                  var controller = controllers.putIfAbsent(
+                    field.dataKey,
+                    () {
+                      // if (widget.meeting != null) {
+                      //   Map<String, dynamic> json = widget.order!.toJson();
+                      //   return TextEditingController.fromValue(
+                      //     TextEditingValue(
+                      //       text: json[field.dataKey],
+                      //     ),
+                      //   );
+                      // }
 
-                  return TextEditingController();
-                },
-              );
-              return Column(
-                children: [
-                  Text(field.label),
-                  const SizedBox(height: 4),
-                  TextFormField(
-                    controller: controller,
-                    validator: field.validator,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      hintText: field.hintText,
-                    ),
+                      return TextEditingController();
+                    },
+                  );
+                  return Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      Text(field.label),
+                      const SizedBox(height: 10),
+                      Container(
+                        width: constraints.maxWidth < 450 ? constraints.maxWidth * 0.8 : constraints.maxWidth * 0.6,
+                        child: Center(
+                          child: TextFormField(
+                            controller: controller,
+                            validator: field.validator,
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              hintText: field.hintText,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                  );
+                }),
+              const SizedBox(height: 8),
+              Container(
+                width: constraints.maxWidth < 450 ? constraints.maxWidth * 0.8 : constraints.maxWidth * 0.4,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: DateTimePicker(
+                    type: DateTimePickerType.dateTime,
+                    initialValue: '',
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2100),
+                    dateLabelText: 'Start Time',
+                    validator: (val) {},
+                    onChanged: (val) {
+                      setState(() {
+                        startDate = DateTime.parse(val);
+                      });
+                    },
                   ),
                   const SizedBox(height: 8),
                 ],
@@ -114,30 +144,31 @@ class _EditMeetingFormState extends State<EditMeetingForm> {
                 // if (widget.order != null) {
                 //   formData.id = widget.order!.id;
                 // }
+                    // MeetingEvent event = widget.order != null ? UpdateMeeting(formData) : CreateMeeting(formData);
+                    MeetingsEvent event = MeetingsCreate(formData);
+                    context.read<MeetingsBloc>().add(event);
 
-                // MeetingEvent event = widget.order != null ? UpdateMeeting(formData) : CreateMeeting(formData);
-                MeetingsEvent event = MeetingsCreate(formData);
-                context.read<MeetingsBloc>().add(event);
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    backgroundColor: Colors.green,
-                    content: Text('Processing Data'),
-                  ),
-                );
-                Navigator.pop(context);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    backgroundColor: Colors.red,
-                    content: Text('Error Saving Data'),
-                  ),
-                );
-              }
-            },
-            child: const Text('Save'),
-          ),
-        ],
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        backgroundColor: Colors.green,
+                        content: Text('Processing Data'),
+                      ),
+                    );
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        backgroundColor: Colors.red,
+                        content: Text('Error Saving Data'),
+                      ),
+                    );
+                  }
+                },
+                child: const Text('Save'),
+              ),
+            ],
+          );
+        }),
       ),
     );
   }
