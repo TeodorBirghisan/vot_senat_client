@@ -3,13 +3,27 @@ import 'package:vot_senat_client/model/meeting.dart';
 import 'package:vot_senat_client/pages/topic_page/topic_page.dart';
 import 'package:intl/intl.dart';
 
-class MeetingCard extends StatelessWidget {
+class MeetingCard extends StatefulWidget {
   final Meeting meeting;
 
   const MeetingCard({
     Key? key,
     required this.meeting,
   }) : super(key: key);
+
+  @override
+  State<MeetingCard> createState() => _MeetingCardState();
+}
+
+class _MeetingCardState extends State<MeetingCard> {
+  late bool _isOverdue;
+
+  @override
+  void initState() {
+    super.initState();
+    DateTime startDate = widget.meeting.startDate ?? DateTime.now();
+    _isOverdue = startDate.difference(DateTime.now()).inMinutes <= 0;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +46,7 @@ class MeetingCard extends StatelessWidget {
                 children: [
                   const SizedBox(width: 24),
                   Text(
-                    meeting.title ?? "",
+                    widget.meeting.title ?? "",
                     style: Theme.of(context).textTheme.subtitle2,
                   ),
                   Material(
@@ -72,35 +86,36 @@ class MeetingCard extends StatelessWidget {
                     size: 18,
                   ),
                   const SizedBox(width: 8),
-                  _buildTimeText(meeting.startDate),
+                  _buildTimeText(widget.meeting.startDate),
                 ],
               ),
             ),
             const Divider(),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.blueAccent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TopicPage(meeting: meeting),
+            if (!_isOverdue)
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.blueAccent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
                           ),
-                        );
-                      },
-                      child: const Text('Join')),
-                ],
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TopicPage(meeting: widget.meeting),
+                            ),
+                          );
+                        },
+                        child: const Text('Join')),
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -108,8 +123,13 @@ class MeetingCard extends StatelessWidget {
   }
 
   String _computeRemainingTime(DateTime startDate) {
-    int hours = (startDate.difference(DateTime.now()).inHours);
-    int minutes = startDate.difference(DateTime.now()).inMinutes % 60;
+    Duration remainingTime = startDate.difference(DateTime.now());
+    int hours = remainingTime.inHours;
+    int minutes = remainingTime.inMinutes % 60;
+
+    if (hours < 1) {
+      return "Incepe in $minutes minute";
+    }
     return "Incepe in $hours ore si $minutes minute ";
   }
 
@@ -117,7 +137,10 @@ class MeetingCard extends StatelessWidget {
     if (startDate == null) {
       return Text("Data nu a putut fi calculata");
     }
-    if (DateTime.now().difference(startDate).inHours > 24) {
+    if (_isOverdue) {
+      return Text('Meetingul a trecut');
+    }
+    if (startDate.difference(DateTime.now()).inHours > 23) {
       return Text(DateFormat('dd-MM-yyyy - kk:mm').format(startDate));
     }
     return Text(_computeRemainingTime(startDate));

@@ -113,22 +113,37 @@ class _EditMeetingFormState extends State<EditMeetingForm> {
                       });
                     },
                   ),
-                ),
-              ),
-              const SizedBox(height: 38),
-              ElevatedButton(
-                onPressed: () {
-                  //TODO check if startDate is added
-                  if (_formKey.currentState!.validate()) {
-                    Map<String, String> result = {
-                      for (MapEntry<String, TextEditingController> entry in controllers.entries) entry.key: entry.value.text,
-                    };
-                    Meeting formData = Meeting.fromJson(result);
-                    formData.startDate = startDate;
-                    // if (widget.order != null) {
-                    //   formData.id = widget.order!.id;
-                    // }
-
+                  const SizedBox(height: 8),
+                ],
+              );
+            }),
+          const SizedBox(height: 8),
+          DateTimePicker(
+            type: DateTimePickerType.dateTime,
+            initialValue: '',
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2100),
+            dateLabelText: 'Start Time',
+            validator: (val) {},
+            onChanged: (val) {
+              setState(() {
+                startDate = DateTime.parse(val);
+              });
+            },
+          ),
+          const SizedBox(height: 8),
+          ElevatedButton(
+            onPressed: () {
+              //TODO check if startDate is added
+              if (_formKey.currentState!.validate()) {
+                Map<String, String> result = {
+                  for (MapEntry<String, TextEditingController> entry in controllers.entries) entry.key: entry.value.text,
+                };
+                Meeting formData = Meeting.fromJson(result);
+                formData.startDate = startDate.toUtc();
+                // if (widget.order != null) {
+                //   formData.id = widget.order!.id;
+                // }
                     // MeetingEvent event = widget.order != null ? UpdateMeeting(formData) : CreateMeeting(formData);
                     MeetingsEvent event = MeetingsCreate(formData);
                     context.read<MeetingsBloc>().add(event);
