@@ -5,8 +5,8 @@ import 'package:vot_senat_client/bloc/meetings_bloc/meetings_bloc.dart';
 import 'package:vot_senat_client/bloc/meetings_bloc/meetings_event.dart';
 import 'package:vot_senat_client/bloc/meetings_bloc/meetings_state.dart';
 import 'package:vot_senat_client/model/meeting.dart';
+import 'package:vot_senat_client/pages/meetings_history/meetings_history_page.dart';
 import 'package:vot_senat_client/widgets/meeting/meeting_card.dart';
-
 import 'create_meeting_dialog.dart';
 
 class AvailableMeetingsPage extends StatefulWidget {
@@ -54,8 +54,7 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
                   itemCount: meetings.length,
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 5),
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                       child: MeetingCard(
                         meeting: meetings[index],
                       ),
@@ -108,6 +107,12 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) => const CreateMeetingDialog(),
+              );
+            }
+            if (index == 2) {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => const MeetingHistoryPage(),
               );
             }
           },

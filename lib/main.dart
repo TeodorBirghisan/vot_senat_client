@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vot_senat_client/bloc/meetings_history_bloc/meetings_history_bloc.dart';
 import 'package:vot_senat_client/bloc/topic_bloc/topic_bloc.dart';
 import 'package:vot_senat_client/pages/available_meetings/available_meetings_page.dart';
 import 'package:vot_senat_client/pages/login_page.dart';
@@ -28,6 +29,9 @@ class App extends StatelessWidget {
         BlocProvider(
           create: (BuildContext context) => TopicBloc(),
         ),
+        BlocProvider(
+          create: (BuildContext context) => MeetingsHistoryBloc(),
+        ),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -36,8 +40,7 @@ class App extends StatelessWidget {
         ),
         initialRoute: "/available-meetings",
         routes: {
-          "/available-meetings": (BuildContext context) =>
-              const AvailableMeetingsPage(),
+          "/available-meetings": (BuildContext context) => const AvailableMeetingsPage(),
           "/login": (BuildContext context) => const LoginPage(),
         },
       ),

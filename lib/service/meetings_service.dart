@@ -9,6 +9,19 @@ class MeetingsService {
 
   static const MeetingsService instance = MeetingsService._internal();
 
+  Future<Response> getAllHistory() async {
+    Response response = Response(
+        json.encode([
+          Meeting(id: 0, description: "description", title: "title", startDate: DateTime.now(), status: "status"),
+          Meeting(id: 1, description: "description", title: "title", startDate: DateTime.now(), status: "status"),
+          Meeting(id: 2, description: "description", title: "title", startDate: DateTime.now(), status: "status"),
+          Meeting(id: 3, description: "description", title: "Buna dimineata", startDate: DateTime.now(), status: "status"),
+        ]),
+        200);
+
+    return response;
+  }
+
   Future<Response> getAll() async {
     Uri url = Uri.parse("${Api.server}/meetings");
 
@@ -48,9 +61,7 @@ class MeetingsService {
 
   List<Meeting> deserializeAll(Response response) {
     String body = response.body;
-    return (json.decode(body) as List)
-        .map((data) => Meeting.fromJson(data))
-        .toList();
+    return (json.decode(body) as List).map((data) => Meeting.fromJson(data)).toList();
   }
 
   Meeting deserializeOne(Response response) {
