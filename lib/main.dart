@@ -41,7 +41,6 @@ class _AppState extends State<App> {
         ),
         BlocProvider(
           create: (BuildContext context) => MeetingsHistoryBloc(),
-
         ),
       ],
       child: MultiBlocListener(
@@ -63,11 +62,6 @@ class _AppState extends State<App> {
             "/splash": (BuildContext context) => SplashPage(),
           },
         ),
-        initialRoute: "/available-meetings",
-        routes: {
-          "/available-meetings": (BuildContext context) => const AvailableMeetingsPage(),
-          "/login": (BuildContext context) => const LoginPage(),
-        },
       ),
     );
   }

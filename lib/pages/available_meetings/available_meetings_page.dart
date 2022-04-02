@@ -125,16 +125,14 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
                   builder: (BuildContext context) => const CreateMeetingDialog(),
                 );
               }
+              if (index == 2) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) => const MeetingHistoryPage(),
+                );
+              }
             },
           ),
-            }
-            if (index == 2) {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) => const MeetingHistoryPage(),
-              );
-            }
-          },
         ),
       ),
     );
