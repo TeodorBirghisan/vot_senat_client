@@ -15,26 +15,30 @@ class InvitationBloc extends Bloc<InvitationEvent, InvitationState> {
     on<SignupUserInvitation>(_onSignupUserInvitation);
   }
 
-  FutureOr<void> _invite(InviteUser event, Emitter<InvitationState> emit) async {
+  FutureOr<void> _invite(
+      InviteUser event, Emitter<InvitationState> emit) async {
     emit(InvitationLoading());
 
     Response response = await InvitationService.instance.invite(event.email);
 
-    if (response.statusCode == HttpStatus.ok) {
+    if (response.statusCode == HttpStatus.created) {
       emit(InvitationSuccess());
     } else {
       emit(InvitationError());
     }
   }
 
-  FutureOr<void> _reset(ResetInvitation event, Emitter<InvitationState> emit) async {
+  FutureOr<void> _reset(
+      ResetInvitation event, Emitter<InvitationState> emit) async {
     emit(InvitationInit());
   }
 
-  FutureOr<void> _onSignupUserInvitation(SignupUserInvitation event, Emitter<InvitationState> emit) async {
+  FutureOr<void> _onSignupUserInvitation(
+      SignupUserInvitation event, Emitter<InvitationState> emit) async {
     emit(InvitationLoading());
 
-    Response response = await InvitationService.instance.signUpInvitation(event.email, event.password, event.invitationCode);
+    Response response = await InvitationService.instance
+        .signUpInvitation(event.email, event.password, event.invitationCode);
 
     if (response.statusCode == HttpStatus.created) {
       emit(InvitationSignupSuccess());

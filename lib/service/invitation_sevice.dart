@@ -28,8 +28,9 @@ class InvitationService {
     }
   }
 
-  Future<Response> signUpInvitation(String email, String password, invitationCode) async {
-    Uri url = Uri.parse("${Api.server}/auth-jwt/login");
+  Future<Response> signUpInvitation(
+      String email, String password, invitationCode) async {
+    Uri url = Uri.parse("${Api.server}/auth-jwt/register");
 
     try {
       Response response = await post(
