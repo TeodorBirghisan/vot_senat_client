@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vot_senat_client/bloc/meetings_history_bloc/meetings_history_bloc.dart';
 import 'package:vot_senat_client/bloc/topic_bloc/topic_bloc.dart';
 import 'package:vot_senat_client/bloc/user_bloc/user_bloc.dart';
 import 'package:vot_senat_client/bloc/user_bloc/user_event.dart';
@@ -38,6 +39,10 @@ class _AppState extends State<App> {
         BlocProvider<UserBloc>(
           create: (BuildContext context) => UserBloc(),
         ),
+        BlocProvider(
+          create: (BuildContext context) => MeetingsHistoryBloc(),
+
+        ),
       ],
       child: MultiBlocListener(
         listeners: [
@@ -58,6 +63,11 @@ class _AppState extends State<App> {
             "/splash": (BuildContext context) => SplashPage(),
           },
         ),
+        initialRoute: "/available-meetings",
+        routes: {
+          "/available-meetings": (BuildContext context) => const AvailableMeetingsPage(),
+          "/login": (BuildContext context) => const LoginPage(),
+        },
       ),
     );
   }

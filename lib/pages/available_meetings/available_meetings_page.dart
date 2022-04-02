@@ -7,8 +7,8 @@ import 'package:vot_senat_client/bloc/meetings_bloc/meetings_state.dart';
 import 'package:vot_senat_client/bloc/user_bloc/user_bloc.dart';
 import 'package:vot_senat_client/bloc/user_bloc/user_event.dart';
 import 'package:vot_senat_client/model/meeting.dart';
+import 'package:vot_senat_client/pages/meetings_history/meetings_history_page.dart';
 import 'package:vot_senat_client/widgets/meeting/meeting_card.dart';
-
 import 'create_meeting_dialog.dart';
 
 class AvailableMeetingsPage extends StatefulWidget {
@@ -127,6 +127,14 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
               }
             },
           ),
+            }
+            if (index == 2) {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => const MeetingHistoryPage(),
+              );
+            }
+          },
         ),
       ),
     );
@@ -142,6 +150,12 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
     if (state is MeetingCreateSuccess) {
       setState(() {
         meetings.add(state.data);
+      });
+    }
+
+    if (state is MeetingDeleteOneSuccess) {
+      setState(() {
+        meetings.removeWhere((meeting) => meeting.id == state.meetingId);
       });
     }
   }

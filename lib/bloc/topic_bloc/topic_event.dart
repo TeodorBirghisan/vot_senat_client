@@ -15,3 +15,9 @@ class TopicCreate extends TopicEvent {
   final Topic topic;
   TopicCreate(this.topic, this.meeting);
 }
+
+class TopicDelete extends TopicEvent {
+  int topicId;
+  int meetingId;
+  TopicDelete(this.topicId, this.meetingId);
+}

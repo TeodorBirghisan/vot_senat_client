@@ -12,6 +12,19 @@ class MeetingsService {
 
   static const MeetingsService instance = MeetingsService._internal();
 
+  Future<Response> getAllHistory() async {
+    Response response = Response(
+        json.encode([
+          Meeting(id: 0, description: "description", title: "title", startDate: DateTime.now(), status: "status"),
+          Meeting(id: 1, description: "description", title: "title", startDate: DateTime.now(), status: "status"),
+          Meeting(id: 2, description: "description", title: "title", startDate: DateTime.now(), status: "status"),
+          Meeting(id: 3, description: "description", title: "Buna dimineata", startDate: DateTime.now(), status: "status"),
+        ]),
+        200);
+
+    return response;
+  }
+
   Future<Response> getAll() async {
     Uri url = Uri.parse("${Api.server}/meetings");
 
@@ -28,7 +41,7 @@ class MeetingsService {
 
   Future<Response> create(Meeting meeting) async {
     //TODO add user to request whne auth is implemented
-    Uri url = Uri.parse("${Api.server}/meetings/1");
+    Uri url = Uri.parse("${Api.server}/meetings/8");
 
     try {
       Response response = await post(
@@ -36,6 +49,17 @@ class MeetingsService {
         body: meeting.toJson(),
         headers: HeadersHandler.createAuthToken(),
       );
+      return response;
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  Future<Response> deleteOne(int meetingId) async {
+    Uri url = Uri.parse("${Api.server}/meetings/$meetingId");
+
+    try {
+      Response response = await delete(url);
       return response;
     } on Exception {
       rethrow;
@@ -50,5 +74,10 @@ class MeetingsService {
   Meeting deserializeOne(Response response) {
     String body = response.body;
     return Meeting.fromJson(json.decode(body));
+  }
+
+  int deserializeId(Response response) {
+    String body = response.body;
+    return json.decode(body);
   }
 }
