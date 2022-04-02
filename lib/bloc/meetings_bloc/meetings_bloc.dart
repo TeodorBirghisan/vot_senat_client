@@ -28,6 +28,7 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
     } else {
       emit(MeetingGetAllError());
     }
+    //TODO check response for 401 and logout user in case this is emited
   }
 
   FutureOr<void> _onCreate(

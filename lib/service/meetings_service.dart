@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart';
+import 'package:vot_senat_client/handlers/headers_handler.dart';
+import 'package:vot_senat_client/handlers/shared_pref_handler.dart';
 import 'package:vot_senat_client/model/meeting.dart';
 import 'package:vot_senat_client/utils/api.dart';
 
@@ -26,7 +29,10 @@ class MeetingsService {
     Uri url = Uri.parse("${Api.server}/meetings");
 
     try {
-      Response response = await get(url);
+      Response response = await get(
+        url,
+        headers: HeadersHandler.createAuthToken(),
+      );
       return response;
     } on Exception {
       rethrow;
@@ -41,6 +47,7 @@ class MeetingsService {
       Response response = await post(
         url,
         body: meeting.toJson(),
+        headers: HeadersHandler.createAuthToken(),
       );
       return response;
     } on Exception {

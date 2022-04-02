@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vot_senat_client/bloc/meetings_bloc/meetings_bloc.dart';
 import 'package:vot_senat_client/bloc/meetings_bloc/meetings_event.dart';
 import 'package:vot_senat_client/bloc/meetings_bloc/meetings_state.dart';
+import 'package:vot_senat_client/bloc/user_bloc/user_bloc.dart';
+import 'package:vot_senat_client/bloc/user_bloc/user_event.dart';
 import 'package:vot_senat_client/model/meeting.dart';
 import 'package:vot_senat_client/pages/meetings_history/meetings_history_page.dart';
 import 'package:vot_senat_client/widgets/meeting/meeting_card.dart';
@@ -35,79 +37,96 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
           listener: _meetingsBlocListener,
         ),
       ],
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Available meetings page"),
-          centerTitle: true,
-        ),
-        body: BlocBuilder<MeetingsBloc, MeetingsState>(
-          builder: (context, meetingsState) {
-            if (meetingsState is MeetingsLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-
-            if (meetingsState is MeetingsSuccess) {
-              return RefreshIndicator(
-                child: ListView.builder(
-                  itemCount: meetings.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                      child: MeetingCard(
-                        meeting: meetings[index],
-                      ),
-                    );
-                  },
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text("Available meetings page"),
+            centerTitle: true,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: InkWell(
+                    child: Text('Logout'),
+                    onTap: () {
+                      BlocProvider.of<UserBloc>(context).add(LogoutUser());
+                    },
+                  ),
                 ),
-                onRefresh: () async {
-                  BlocProvider.of<MeetingsBloc>(context).add(MeetingsGetAll());
-                  return;
-                },
-              );
-            }
+              )
+            ],
+          ),
+          body: BlocBuilder<MeetingsBloc, MeetingsState>(
+            builder: (context, meetingsState) {
+              if (meetingsState is MeetingsLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-            if (meetingsState is MeetingsError) {
+              if (meetingsState is MeetingsSuccess) {
+                return RefreshIndicator(
+                  child: ListView.builder(
+                    itemCount: meetings.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                        child: MeetingCard(
+                          meeting: meetings[index],
+                        ),
+                      );
+                    },
+                  ),
+                  onRefresh: () async {
+                    BlocProvider.of<MeetingsBloc>(context).add(MeetingsGetAll());
+                    return;
+                  },
+                );
+              }
+
+              if (meetingsState is MeetingsError) {
+                return const Center(
+                  child: Text("Something wrong happend"),
+                );
+              }
+
               return const Center(
-                child: Text("Something wrong happend"),
+                child: Text("Unreachable state"),
               );
-            }
-
-            return const Center(
-              child: Text("Unreachable state"),
-            );
-          },
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Meetings',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.add),
-              label: 'Create',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.history),
-              label: 'History',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.send),
-              label: 'Invite',
-            ),
-          ],
-          currentIndex: 0,
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: Colors.amber[800],
-          unselectedItemColor: Colors.black,
-          onTap: (index) {
-            if (index == 1) {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) => const CreateMeetingDialog(),
-              );
+            },
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Meetings',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.add),
+                label: 'Create',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.history),
+                label: 'History',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.send),
+                label: 'Invite',
+              ),
+            ],
+            currentIndex: 0,
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: Colors.amber[800],
+            unselectedItemColor: Colors.black,
+            onTap: (index) {
+              if (index == 1) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) => const CreateMeetingDialog(),
+                );
+              }
+            },
+          ),
             }
             if (index == 2) {
               showDialog(

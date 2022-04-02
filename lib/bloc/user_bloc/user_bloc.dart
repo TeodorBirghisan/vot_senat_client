@@ -1,0 +1,39 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart';
+import 'package:vot_senat_client/handlers/shared_pref_handler.dart';
+import 'package:vot_senat_client/service/user_service.dart';
+
+import 'user_event.dart';
+import 'user_state.dart';
+
+class UserBloc extends Bloc<UserEvent, UserState> {
+  UserBloc() : super(UserInit()) {
+    on<LoginUser>(_onLogin);
+    on<LogoutUser>(_onLogout);
+    on<LoginExistingUser>(_onLoginExistingUser);
+  }
+
+  FutureOr<void> _onLogin(LoginUser event, Emitter<UserState> emit) async {
+    Response response = await UserService.instance.login(event.email, event.password);
+
+    if (response.statusCode == HttpStatus.created) {
+      SharedPrefHandler.instance.token = json.decode(response.body)['accessToken'];
+      emit(UserAuthenticated());
+    } else {
+      emit(UserNotAuthenticated());
+    }
+  }
+
+  FutureOr<void> _onLoginExistingUser(LoginExistingUser event, Emitter<UserState> emit) {
+    emit(UserAuthenticated());
+  }
+
+  FutureOr<void> _onLogout(LogoutUser event, Emitter<UserState> emit) async {
+    SharedPrefHandler.instance.removeToken();
+    emit(UserNotAuthenticated());
+  }
+}
