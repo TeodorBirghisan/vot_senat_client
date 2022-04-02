@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vot_senat_client/bloc/invitation_bloc/invitation_bloc.dart';
 import 'package:vot_senat_client/bloc/meetings_history_bloc/meetings_history_bloc.dart';
 import 'package:vot_senat_client/bloc/topic_bloc/topic_bloc.dart';
 import 'package:vot_senat_client/bloc/user_bloc/user_bloc.dart';
-import 'package:vot_senat_client/bloc/user_bloc/user_event.dart';
 import 'package:vot_senat_client/handlers/navigator_handler.dart';
 import 'package:vot_senat_client/pages/available_meetings/available_meetings_page.dart';
+import 'package:vot_senat_client/pages/invitation_signup_page.dart';
 import 'package:vot_senat_client/pages/login_page.dart';
 import 'package:vot_senat_client/pages/splash_page.dart';
 
 import 'bloc/meetings_bloc/meetings_bloc.dart';
-import 'bloc/todo_bloc/todo_bloc.dart';
 import 'bloc/user_bloc/user_state.dart';
-import 'handlers/shared_pref_handler.dart';
 
 void main() async {
   runApp(const App());
@@ -42,6 +41,9 @@ class _AppState extends State<App> {
         BlocProvider(
           create: (BuildContext context) => MeetingsHistoryBloc(),
         ),
+        BlocProvider(
+          create: (BuildContext context) => InvitationBloc(),
+        ),
       ],
       child: MultiBlocListener(
         listeners: [
@@ -60,6 +62,7 @@ class _AppState extends State<App> {
             "/available-meetings": (BuildContext context) => const AvailableMeetingsPage(),
             "/login": (BuildContext context) => const LoginPage(),
             "/splash": (BuildContext context) => SplashPage(),
+            "/signup-invitation": (BuildContext context) => InvitationSignupPage(),
           },
         ),
       ),

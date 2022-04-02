@@ -7,6 +7,7 @@ import 'package:vot_senat_client/bloc/meetings_bloc/meetings_state.dart';
 import 'package:vot_senat_client/bloc/user_bloc/user_bloc.dart';
 import 'package:vot_senat_client/bloc/user_bloc/user_event.dart';
 import 'package:vot_senat_client/model/meeting.dart';
+import 'package:vot_senat_client/pages/invitation_page/invitation_page.dart';
 import 'package:vot_senat_client/pages/meetings_history/meetings_history_page.dart';
 import 'package:vot_senat_client/widgets/meeting/meeting_card.dart';
 import 'create_meeting_dialog.dart';
@@ -47,7 +48,7 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Center(
                   child: InkWell(
-                    child: Text('Logout'),
+                    child: const Text('Logout'),
                     onTap: () {
                       BlocProvider.of<UserBloc>(context).add(LogoutUser());
                     },
@@ -129,6 +130,12 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) => const MeetingHistoryPage(),
+                );
+              }
+              if (index == 3) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) => const InvitationPage(),
                 );
               }
             },
