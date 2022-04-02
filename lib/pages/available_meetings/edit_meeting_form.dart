@@ -78,10 +78,8 @@ class _EditMeetingFormState extends State<EditMeetingForm> {
                       const SizedBox(height: 20),
                       Text(field.label),
                       const SizedBox(height: 10),
-                      Container(
-                        width: constraints.maxWidth < 450
-                            ? constraints.maxWidth * 0.8
-                            : constraints.maxWidth * 0.6,
+                      SizedBox(
+                        width: constraints.maxWidth < 450 ? constraints.maxWidth * 0.8 : constraints.maxWidth * 0.6,
                         child: Center(
                           child: TextFormField(
                             controller: controller,
@@ -98,10 +96,8 @@ class _EditMeetingFormState extends State<EditMeetingForm> {
                   );
                 }),
               const SizedBox(height: 8),
-              Container(
-                width: constraints.maxWidth < 450
-                    ? constraints.maxWidth * 0.8
-                    : constraints.maxWidth * 0.4,
+              SizedBox(
+                width: constraints.maxWidth < 450 ? constraints.maxWidth * 0.8 : constraints.maxWidth * 0.4,
                 child: Align(
                   alignment: Alignment.center,
                   child: DateTimePicker(
@@ -125,9 +121,7 @@ class _EditMeetingFormState extends State<EditMeetingForm> {
                   //TODO check if startDate is added
                   if (_formKey.currentState!.validate()) {
                     Map<String, String> result = {
-                      for (MapEntry<String, TextEditingController> entry
-                          in controllers.entries)
-                        entry.key: entry.value.text,
+                      for (MapEntry<String, TextEditingController> entry in controllers.entries) entry.key: entry.value.text,
                     };
                     Meeting formData = Meeting.fromJson(result);
                     formData.startDate = startDate.toUtc();

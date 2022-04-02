@@ -15,7 +15,7 @@ class SharedPrefHandler {
     _prefs = await SharedPreferences.getInstance();
   }
 
-  void set token(String? token) {
+  set token(String? token) {
     if (token != null) {
       _prefs.setString(SharedPrefsKeys.token, token);
       return;

@@ -4,7 +4,6 @@ import 'package:vot_senat_client/bloc/user_bloc/user_bloc.dart';
 import 'package:vot_senat_client/bloc/user_bloc/user_event.dart';
 import 'package:vot_senat_client/utils/form_field_data.dart';
 import 'package:vot_senat_client/utils/form_validators.dart';
-import 'package:vot_senat_client/widgets/login/login_input.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
@@ -31,7 +30,7 @@ class LoginFormState extends State<LoginForm> {
       ),
       FormFieldData(
         dataKey: "password",
-        label: "Description",
+        label: "Parola",
         hintText: "",
         validator: FormValidators.notEmptyValidator,
         isPassword: true,
@@ -70,7 +69,7 @@ class LoginFormState extends State<LoginForm> {
                     ),
                     obscureText: field.isPassword ?? false,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 32),
                 ],
               );
             }),
