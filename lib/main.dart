@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vot_senat_client/bloc/invitation_bloc/invitation_bloc.dart';
 import 'package:vot_senat_client/bloc/meetings_history_bloc/meetings_history_bloc.dart';
+import 'package:vot_senat_client/bloc/participation_bloc/participation_bloc.dart';
 import 'package:vot_senat_client/bloc/topic_bloc/topic_bloc.dart';
 import 'package:vot_senat_client/bloc/user_bloc/user_bloc.dart';
 import 'package:vot_senat_client/handlers/navigator_handler.dart';
@@ -43,6 +44,9 @@ class _AppState extends State<App> {
         ),
         BlocProvider(
           create: (BuildContext context) => InvitationBloc(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => ParticipationBloc(),
         ),
       ],
       child: MultiBlocListener(

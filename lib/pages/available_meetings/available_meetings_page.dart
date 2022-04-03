@@ -4,11 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vot_senat_client/bloc/meetings_bloc/meetings_bloc.dart';
 import 'package:vot_senat_client/bloc/meetings_bloc/meetings_event.dart';
 import 'package:vot_senat_client/bloc/meetings_bloc/meetings_state.dart';
+import 'package:vot_senat_client/bloc/participation_bloc/participation_bloc.dart';
+import 'package:vot_senat_client/bloc/participation_bloc/participation_state.dart';
 import 'package:vot_senat_client/bloc/user_bloc/user_bloc.dart';
 import 'package:vot_senat_client/bloc/user_bloc/user_event.dart';
 import 'package:vot_senat_client/model/meeting.dart';
 import 'package:vot_senat_client/pages/invitation_page/invitation_page.dart';
 import 'package:vot_senat_client/pages/meetings_history/meetings_history_page.dart';
+import 'package:vot_senat_client/pages/topic_page/topic_page.dart';
 import 'package:vot_senat_client/widgets/meeting/meeting_card.dart';
 import 'create_meeting_dialog.dart';
 
@@ -37,6 +40,9 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
         BlocListener<MeetingsBloc, MeetingsState>(
           listener: _meetingsBlocListener,
         ),
+        BlocListener<ParticipationBloc, ParticipationState>(
+          listener: _participationListener,
+        ),
       ],
       child: SafeArea(
         child: Scaffold(
@@ -57,45 +63,53 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
               )
             ],
           ),
-          body: BlocBuilder<MeetingsBloc, MeetingsState>(
-            builder: (context, meetingsState) {
-              if (meetingsState is MeetingsLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-
-              if (meetingsState is MeetingsSuccess) {
-                return RefreshIndicator(
-                  child: ListView.builder(
-                    itemCount: meetings.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                        child: MeetingCard(
-                          meeting: meetings[index],
-                        ),
-                      );
-                    },
-                  ),
-                  onRefresh: () async {
-                    BlocProvider.of<MeetingsBloc>(context).add(MeetingsGetAll());
-                    return;
-                  },
-                );
-              }
-
-              if (meetingsState is MeetingsError) {
-                return const Center(
-                  child: Text("Something wrong happend"),
-                );
-              }
-
+          body: BlocBuilder<ParticipationBloc, ParticipationState>(builder: (_, participationState) {
+            if (participationState is ParticipationLoading) {
               return const Center(
-                child: Text("Unreachable state"),
+                child: CircularProgressIndicator(),
               );
-            },
-          ),
+            }
+
+            return BlocBuilder<MeetingsBloc, MeetingsState>(
+              builder: (context, meetingsState) {
+                if (meetingsState is MeetingsLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                if (meetingsState is MeetingsSuccess) {
+                  return RefreshIndicator(
+                    child: ListView.builder(
+                      itemCount: meetings.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                          child: MeetingCard(
+                            meeting: meetings[index],
+                          ),
+                        );
+                      },
+                    ),
+                    onRefresh: () async {
+                      BlocProvider.of<MeetingsBloc>(context).add(MeetingsGetAll());
+                      return;
+                    },
+                  );
+                }
+
+                if (meetingsState is MeetingsError) {
+                  return const Center(
+                    child: Text("Something wrong happend"),
+                  );
+                }
+
+                return const Center(
+                  child: Text("Unreachable state"),
+                );
+              },
+            );
+          }),
           bottomNavigationBar: BottomNavigationBar(
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
@@ -162,6 +176,30 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
       setState(() {
         meetings.removeWhere((meeting) => meeting.id == state.meetingId);
       });
+    }
+  }
+
+  void _participationListener(BuildContext context, ParticipationState state) {
+    if (state is ParticipationSuccess) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TopicPage(
+            meeting: state.meeting,
+            isEditMode: false,
+          ),
+        ),
+        (route) => false,
+      );
+      return;
+    }
+    if (state is ParticipationError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: const Text('S-a produs o erorare'),
+        ),
+      );
     }
   }
 }

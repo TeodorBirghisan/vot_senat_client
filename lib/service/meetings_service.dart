@@ -40,8 +40,7 @@ class MeetingsService {
   }
 
   Future<Response> create(Meeting meeting) async {
-    //TODO add user to request whne auth is implemented
-    Uri url = Uri.parse("${Api.server}/meetings/8");
+    Uri url = Uri.parse("${Api.server}/meetings");
 
     try {
       Response response = await post(
@@ -59,7 +58,38 @@ class MeetingsService {
     Uri url = Uri.parse("${Api.server}/meetings/$meetingId");
 
     try {
-      Response response = await delete(url);
+      Response response = await delete(
+        url,
+        headers: HeadersHandler.createAuthToken(),
+      );
+      return response;
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  Future<Response> joinMeeting(int meetingId) async {
+    Uri url = Uri.parse("${Api.server}/participation/joinMeeting/$meetingId");
+
+    try {
+      Response response = await post(
+        url,
+        headers: HeadersHandler.createAuthToken(),
+      );
+      return response;
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  Future<Response> exitMeeting(int meetingId) async {
+    Uri url = Uri.parse("${Api.server}/participation/exitMeeting/$meetingId");
+
+    try {
+      Response response = await put(
+        url,
+        headers: HeadersHandler.createAuthToken(),
+      );
       return response;
     } on Exception {
       rethrow;

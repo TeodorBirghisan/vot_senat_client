@@ -1,12 +1,18 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart';
 import 'package:provider/src/provider.dart';
 import 'package:vot_senat_client/bloc/meetings_bloc/meetings_bloc.dart';
 import 'package:vot_senat_client/bloc/meetings_bloc/meetings_event.dart';
+import 'package:vot_senat_client/bloc/participation_bloc/participation_bloc.dart';
+import 'package:vot_senat_client/bloc/participation_bloc/participation_event.dart';
 import 'package:vot_senat_client/model/meeting.dart';
 import 'package:vot_senat_client/pages/topic_page/topic_page.dart';
 import 'package:intl/intl.dart';
+import 'package:vot_senat_client/service/meetings_service.dart';
 
 class MeetingCard extends StatefulWidget {
   final Meeting meeting;
@@ -71,8 +77,7 @@ class _MeetingCardState extends State<MeetingCard> {
                         context: context,
                         builder: (BuildContext context) => AlertDialog(
                           title: Text('Delete ${widget.meeting.title} ?'),
-                          content:
-                              const Text('Are you sure you want to delete?'),
+                          content: const Text('Are you sure you want to delete?'),
                           actions: <Widget>[
                             TextButton(
                               onPressed: () => Navigator.pop(context, 'Cancel'),
@@ -80,8 +85,7 @@ class _MeetingCardState extends State<MeetingCard> {
                             ),
                             TextButton(
                               onPressed: () {
-                                MeetingsEvent event =
-                                    MeetingsDeleteOne(widget.meeting.id!);
+                                MeetingsEvent event = MeetingsDeleteOne(widget.meeting.id!);
                                 context.read<MeetingsBloc>().add(event);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -118,33 +122,63 @@ class _MeetingCardState extends State<MeetingCard> {
               ),
             ),
             const Divider(),
-            if (!_isOverdue)
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.blueAccent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                TopicPage(meeting: widget.meeting),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (_isOverdue && widget.meeting.status != "FINISHED")
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.blueAccent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
                           ),
-                        );
-                      },
-                      child: const Text('Join'),
+                          onPressed: () {
+                            BlocProvider.of<ParticipationBloc>(context).add(JoinMeeting(widget.meeting));
+                          },
+                          child: const Text('Join'),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
+
+                //TODO hide to some users
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.greenAccent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TopicPage(
+                                meeting: widget.meeting,
+                                isEditMode: true,
+                              ),
+                            ),
+                            (route) => false,
+                          );
+                        },
+                        child: const Text('Creeaza topicuri'),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+              ],
+            )
           ],
         ),
       ),
@@ -163,15 +197,18 @@ class _MeetingCardState extends State<MeetingCard> {
   }
 
   Widget _buildTimeText(DateTime? startDate) {
-    if (startDate == null) {
-      return Text("Data nu a putut fi calculata");
+    if (widget.meeting.status == "FINISHED") {
+      return Text('Meetingul s-a incheiat');
     }
+
+    if (widget.meeting.status == "IN PROGRESS") {
+      return Text('Meetingul a inceput');
+    }
+
     if (_isOverdue) {
-      return Text('Meetingul a trecut');
+      return Text('Puteti intra in meeting');
     }
-    if (startDate.difference(DateTime.now()).inHours > 23) {
-      return Text(DateFormat('dd-MM-yyyy - kk:mm').format(startDate));
-    }
-    return Text(_computeRemainingTime(startDate));
+
+    return Text(_computeRemainingTime(startDate!));
   }
 }
