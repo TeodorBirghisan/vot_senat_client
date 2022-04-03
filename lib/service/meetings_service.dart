@@ -96,6 +96,20 @@ class MeetingsService {
     }
   }
 
+  Future<Response> getParticipants(int meetingId) async {
+    Uri url = Uri.parse("${Api.server}/participation/allUsers/$meetingId");
+
+    try {
+      Response response = await get(
+        url,
+        headers: HeadersHandler.createAuthToken(),
+      );
+      return response;
+    } on Exception {
+      rethrow;
+    }
+  }
+
   List<Meeting> deserializeAll(Response response) {
     String body = response.body;
     return (json.decode(body) as List).map((data) => Meeting.fromJson(data)).toList();
