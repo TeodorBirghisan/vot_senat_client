@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,6 +26,7 @@ class AvailableMeetingsPage extends StatefulWidget {
 
 class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
   late List<Meeting> meetings;
+  late Timer _getMeetingsTimer;
 
   @override
   void initState() {
@@ -31,6 +34,9 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
 
     meetings = [];
     BlocProvider.of<MeetingsBloc>(context).add(MeetingsGetAll());
+    _getMeetingsTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+      BlocProvider.of<MeetingsBloc>(context).add(MeetingsGetAll());
+    });
   }
 
   @override
@@ -201,5 +207,13 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
         ),
       );
     }
+  }
+
+  @override
+  void dispose() {
+    if (_getMeetingsTimer.isActive) {
+      _getMeetingsTimer.cancel();
+    }
+    super.dispose();
   }
 }

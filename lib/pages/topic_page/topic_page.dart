@@ -35,18 +35,22 @@ class TopicPage extends StatefulWidget {
 class _TopicState extends State<TopicPage> {
   late List<Topic> topics;
   late Timer? _participantsTimer;
+  late List<User> _participants;
 
   @override
   void initState() {
     super.initState();
 
     topics = [];
-    _participantsTimer = Timer(
-      Duration(seconds: 10),
-      () async => BlocProvider.of<ParticipantsBloc>(context).add(ParticipantsGetAll(widget.meeting)),
+    _participantsTimer = Timer.periodic(
+      const Duration(seconds: 5),
+      (timer) {
+        BlocProvider.of<ParticipantsBloc>(context).add(ParticipantsGetAll(widget.meeting));
+      },
     );
     BlocProvider.of<TopicBloc>(context).add(TopicGetAll(widget.meeting));
     BlocProvider.of<ParticipantsBloc>(context).add(ParticipantsGetAll(widget.meeting));
+    _participants = [];
   }
 
   @override
@@ -64,6 +68,9 @@ class _TopicState extends State<TopicPage> {
         listeners: [
           BlocListener<TopicBloc, TopicState>(
             listener: _topicBlocListener,
+          ),
+          BlocListener<ParticipantsBloc, ParticipantsState>(
+            listener: _participantsBlocListener,
           ),
         ],
         child: Scaffold(
@@ -84,11 +91,33 @@ class _TopicState extends State<TopicPage> {
                       isScrollControlled: true,
                       builder: (_) => FractionallySizedBox(
                         heightFactor: 0.9,
-                        child: PaticipantsBottomSheet(),
+                        child: ParticipantsBottomSheet(
+                          participants: _participants,
+                        ),
                       ),
                     );
                   },
-                  child: const Icon(Icons.person),
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: Colors.orange,
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: Center(
+                          child: Text(
+                            _participants.length.toString(),
+                            style: const TextStyle(),
+                          ),
+                        ),
+                      ),
+                      const Align(
+                        child: Icon(Icons.person),
+                      ),
+                    ],
+                  ),
                 ),
               const SizedBox(width: 16),
               FloatingActionButton(
@@ -177,69 +206,104 @@ class _TopicState extends State<TopicPage> {
       });
     }
   }
+
+  void _participantsBlocListener(BuildContext context, ParticipantsState participantsState) {
+    if (participantsState is ParticipantsGetSuccess) {
+      setState(() {
+        _participants = participantsState.users;
+      });
+    }
+  }
 }
 
-class PaticipantsBottomSheet extends StatelessWidget {
+class ParticipantsBottomSheet extends StatefulWidget {
+  final List<User> participants;
+
+  const ParticipantsBottomSheet({
+    Key? key,
+    required this.participants,
+  }) : super(key: key);
+
+  @override
+  State<ParticipantsBottomSheet> createState() => _ParticipantsBottomSheetState();
+}
+
+class _ParticipantsBottomSheetState extends State<ParticipantsBottomSheet> {
+  late List<User> _participants;
+
+  @override
+  void initState() {
+    super.initState();
+    _participants = widget.participants;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ParticipantsBloc, ParticipantsState>(
-      builder: (_, participantsState) {
-        if (participantsState is ParticipantsLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        if (participantsState is ParticipantsGetSuccess) {
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Text(
-                  "Participanti",
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Numar de participanti",
-                      style: Theme.of(context).textTheme.subtitle1,
-                    ),
-                    Text(
-                      participantsState.users.length.toString(),
-                      style: Theme.of(context).textTheme.subtitle1,
-                    )
-                  ],
-                ),
-                const Divider(),
-                const SizedBox(height: 16),
-                ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: participantsState.users.length,
-                  separatorBuilder: (_, __) => const Divider(),
-                  itemBuilder: (_, index) => Row(
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ParticipantsBloc, ParticipantsState>(
+          listener: _participantsBlocListener,
+        ),
+      ],
+      child: BlocBuilder<ParticipantsBloc, ParticipantsState>(
+        builder: (_, participantsState) {
+          if (participantsState is ParticipantsGetSuccess || participantsState is ParticipantsLoading) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Text(
+                    "Participanti",
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(Icons.person),
-                      const SizedBox(width: 8),
-                      Text(participantsState.users[index].email),
+                      Text(
+                        "Numar de participanti",
+                        style: Theme.of(context).textTheme.subtitle1,
+                      ),
+                      Text(
+                        _participants.length.toString(),
+                        style: Theme.of(context).textTheme.subtitle1,
+                      )
                     ],
                   ),
-                ),
-              ],
-            ),
-          );
-        }
+                  const Divider(),
+                  const SizedBox(height: 16),
+                  ListView.separated(
+                    shrinkWrap: true,
+                    itemCount: _participants.length,
+                    separatorBuilder: (_, __) => const Divider(),
+                    itemBuilder: (_, index) => Row(
+                      children: [
+                        Icon(Icons.person),
+                        const SizedBox(width: 8),
+                        Text(_participants[index].email),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
 
-        if (participantsState is ParticipantsGetFailure) {
-          return const Center(
-            child: Text("Error State"),
-          );
-        }
+          if (participantsState is ParticipantsGetFailure) {
+            return const Center(
+              child: Text("Error State"),
+            );
+          }
 
-        return Text("Unreachable State");
-      },
+          return Text("Unreachable State");
+        },
+      ),
     );
+  }
+
+  void _participantsBlocListener(BuildContext context, ParticipantsState participantsState) {
+    if (participantsState is ParticipantsGetSuccess) {
+      _participants = participantsState.users;
+    }
   }
 }
