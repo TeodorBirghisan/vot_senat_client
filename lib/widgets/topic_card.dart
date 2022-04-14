@@ -8,11 +8,13 @@ import 'package:vot_senat_client/service/vote_service.dart';
 class TopicCard extends StatefulWidget {
   final Topic topic;
   final int meetingId;
+  final bool isReadonly;
 
   const TopicCard({
     Key? key,
     required this.topic,
     required this.meetingId,
+    required this.isReadonly,
   }) : super(key: key);
 
   @override
@@ -32,18 +34,23 @@ class _TopicCardState extends State<TopicCard> {
           color: Colors.white,
         ),
         clipBehavior: Clip.hardEdge,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Row(
                 children: [
-                  const SizedBox(width: 24),
-                  Text(
-                    widget.topic.content ?? "",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline5,
+                  Expanded(
+                    child: Wrap(
+                      children: [
+                        Text(
+                          widget.topic.content ?? "",
+                          textAlign: TextAlign.left,
+                          overflow: TextOverflow.visible,
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ],
+                    ),
                   ),
                   Material(
                     color: Colors.red,
@@ -88,39 +95,40 @@ class _TopicCardState extends State<TopicCard> {
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: const [
-                InfoIndicator(
-                  label: "Nu",
-                  labelIcon: Icons.cancel_outlined,
-                  labelColor: Colors.red,
-                  value: '3',
-                ),
-                InfoIndicator(
-                  label: "Ma Abtin",
-                  labelIcon: Icons.info_outline,
-                  labelColor: Colors.orange,
-                  value: '4',
-                ),
-                InfoIndicator(
-                  label: "Da",
-                  labelIcon: Icons.check_circle_outline,
-                  labelColor: Colors.green,
-                  value: '8',
-                )
-              ],
-            ),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: _TopicBottomSection(
-                topic: widget.topic,
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  InfoIndicator(
+                    label: "Nu",
+                    labelIcon: Icons.cancel_outlined,
+                    labelColor: Colors.red,
+                    value: '${widget.topic.no!}',
+                  ),
+                  InfoIndicator(
+                    label: "Ma Abtin",
+                    labelIcon: Icons.info_outline,
+                    labelColor: Colors.orange,
+                    value: '${widget.topic.abtain!}',
+                  ),
+                  InfoIndicator(
+                    label: "Da",
+                    labelIcon: Icons.check_circle_outline,
+                    labelColor: Colors.green,
+                    value: '${widget.topic.yes!}',
+                  )
+                ],
               ),
-            ),
-          ],
+              const Divider(),
+              if (!widget.isReadonly)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: _TopicBottomSection(
+                    topic: widget.topic,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

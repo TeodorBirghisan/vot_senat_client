@@ -53,12 +53,17 @@ class _MeetingCardState extends State<MeetingCard> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const SizedBox(width: 24),
-                  Text(
-                    widget.meeting.title ?? "",
-                    style: Theme.of(context).textTheme.subtitle2,
+                  Expanded(
+                    child: Wrap(
+                      children: [
+                        Text(
+                          widget.meeting.title ?? "",
+                          style: Theme.of(context).textTheme.subtitle2,
+                          overflow: TextOverflow.visible,
+                        ),
+                      ],
+                    ),
                   ),
                   Material(
                     color: Colors.red,

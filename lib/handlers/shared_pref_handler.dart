@@ -9,7 +9,7 @@ class SharedPrefHandler {
 
   static SharedPrefHandler instance = SharedPrefHandler._internal();
 
-  late SharedPreferences _prefs;
+  SharedPreferences? _prefs;
 
   Future<void> ensureInitialized() async {
     _prefs = await SharedPreferences.getInstance();
@@ -17,7 +17,7 @@ class SharedPrefHandler {
 
   set token(String? token) {
     if (token != null) {
-      _prefs.setString(SharedPrefsKeys.token, token);
+      _prefs!.setString(SharedPrefsKeys.token, token);
       return;
     }
 
@@ -25,10 +25,10 @@ class SharedPrefHandler {
   }
 
   void removeToken() {
-    _prefs.remove(SharedPrefsKeys.token);
+    _prefs!.remove(SharedPrefsKeys.token);
   }
 
   String? get token {
-    return _prefs.getString(SharedPrefsKeys.token);
+    return _prefs!.getString(SharedPrefsKeys.token);
   }
 }

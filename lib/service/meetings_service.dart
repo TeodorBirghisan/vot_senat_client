@@ -13,16 +13,17 @@ class MeetingsService {
   static const MeetingsService instance = MeetingsService._internal();
 
   Future<Response> getAllHistory() async {
-    Response response = Response(
-        json.encode([
-          Meeting(id: 0, description: "description", title: "title", startDate: DateTime.now(), status: "status"),
-          Meeting(id: 1, description: "description", title: "title", startDate: DateTime.now(), status: "status"),
-          Meeting(id: 2, description: "description", title: "title", startDate: DateTime.now(), status: "status"),
-          Meeting(id: 3, description: "description", title: "Buna dimineata", startDate: DateTime.now(), status: "status"),
-        ]),
-        200);
+    Uri url = Uri.parse("${Api.server}/meetings/finished");
 
-    return response;
+    try {
+      Response response = await get(
+        url,
+        headers: HeadersHandler.createAuthToken(),
+      );
+      return response;
+    } on Exception {
+      rethrow;
+    }
   }
 
   Future<Response> getAll() async {

@@ -10,6 +10,7 @@ import 'package:vot_senat_client/bloc/participation_bloc/participation_bloc.dart
 import 'package:vot_senat_client/bloc/participation_bloc/participation_state.dart';
 import 'package:vot_senat_client/bloc/user_bloc/user_bloc.dart';
 import 'package:vot_senat_client/bloc/user_bloc/user_event.dart';
+import 'package:vot_senat_client/bloc/user_bloc/user_state.dart';
 import 'package:vot_senat_client/model/meeting.dart';
 import 'package:vot_senat_client/pages/invitation_page/invitation_page.dart';
 import 'package:vot_senat_client/pages/meetings_history/meetings_history_page.dart';
@@ -56,17 +57,25 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
             title: const Text("Available meetings page"),
             centerTitle: true,
             actions: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: InkWell(
-                    child: const Text('Logout'),
-                    onTap: () {
-                      BlocProvider.of<UserBloc>(context).add(LogoutUser());
-                    },
+              PopupMenuButton<String>(
+                onSelected: (String result) {},
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  PopupMenuItem<String>(
+                    value: "User",
+                    child: BlocBuilder<UserBloc, UserState>(builder: (_, userState) {
+                      if (userState is UserAuthenticated) {
+                        return Text("userName");
+                      }
+
+                      return Text("Neautentificat");
+                    }),
                   ),
-                ),
-              )
+                  const PopupMenuItem<String>(
+                    value: "Logout",
+                    child: Text('Logout'),
+                  ),
+                ],
+              ),
             ],
           ),
           body: BlocBuilder<ParticipationBloc, ParticipationState>(builder: (_, participationState) {
@@ -85,6 +94,12 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
                 }
 
                 if (meetingsState is MeetingsSuccess) {
+                  if (meetings.isEmpty) {
+                    return const Center(
+                      child: Text("Momentan nu exista sedinte"),
+                    );
+                  }
+
                   return RefreshIndicator(
                     child: ListView.builder(
                       itemCount: meetings.length,

@@ -53,7 +53,7 @@ class _MeetingsHistoryState extends State<MeetingHistoryPage> {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                       child: HistoryCard(
-                        meetingHistory: meetingHistory[index],
+                        meeting: meetingHistory[index],
                       ),
                     );
                   },

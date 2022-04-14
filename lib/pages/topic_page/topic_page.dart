@@ -21,11 +21,13 @@ import 'create_topic_dialog.dart';
 class TopicPage extends StatefulWidget {
   final Meeting meeting;
   final bool isEditMode;
+  final bool? isReadonly;
 
   const TopicPage({
     Key? key,
     required this.meeting,
     required this.isEditMode,
+    this.isReadonly,
   }) : super(key: key);
 
   @override
@@ -80,59 +82,61 @@ class _TopicState extends State<TopicPage> {
           ),
           floatingActionButton: Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (!widget.isEditMode)
-                FloatingActionButton(
-                  heroTag: "users",
-                  onPressed: () {
-                    BlocProvider.of<ParticipantsBloc>(context).add(ParticipantsGetAll(widget.meeting));
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (_) => FractionallySizedBox(
-                        heightFactor: 0.9,
-                        child: ParticipantsBottomSheet(
-                          participants: _participants,
+            children: widget.isReadonly ?? false
+                ? []
+                : [
+                    if (!widget.isEditMode)
+                      FloatingActionButton(
+                        heroTag: "users",
+                        onPressed: () {
+                          BlocProvider.of<ParticipantsBloc>(context).add(ParticipantsGetAll(widget.meeting));
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (_) => FractionallySizedBox(
+                              heightFactor: 0.9,
+                              child: ParticipantsBottomSheet(
+                                participants: _participants,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Stack(
+                          children: [
+                            Container(
+                              width: 20,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                color: Colors.orange,
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  _participants.length.toString(),
+                                  style: const TextStyle(),
+                                ),
+                              ),
+                            ),
+                            const Align(
+                              child: Icon(Icons.person),
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  },
-                  child: Stack(
-                    children: [
-                      Container(
-                        width: 20,
-                        height: 20,
-                        decoration: BoxDecoration(
-                          color: Colors.orange,
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        child: Center(
-                          child: Text(
-                            _participants.length.toString(),
-                            style: const TextStyle(),
+                    const SizedBox(width: 16),
+                    FloatingActionButton(
+                      heroTag: "add",
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => CreateTopicDialog(
+                            meeting: widget.meeting,
                           ),
-                        ),
-                      ),
-                      const Align(
-                        child: Icon(Icons.person),
-                      ),
-                    ],
-                  ),
-                ),
-              const SizedBox(width: 16),
-              FloatingActionButton(
-                heroTag: "add",
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) => CreateTopicDialog(
-                      meeting: widget.meeting,
+                        );
+                      },
+                      child: const Icon(Icons.add),
                     ),
-                  );
-                },
-                child: const Icon(Icons.add),
-              ),
-            ],
+                  ],
           ),
           body: BlocBuilder<TopicBloc, TopicState>(
             builder: (context, meetingsState) {
@@ -152,6 +156,7 @@ class _TopicState extends State<TopicPage> {
                         child: TopicCard(
                           meetingId: widget.meeting.id!,
                           topic: topics[index],
+                          isReadonly: widget.isReadonly ?? false,
                         ),
                       );
                     },
@@ -194,10 +199,7 @@ class _TopicState extends State<TopicPage> {
     }
 
     if (state is TopicCreateSuccess) {
-      setState(() {
-        topics.add(state.data);
-        // meetings.add(state.data);
-      });
+      BlocProvider.of<TopicBloc>(context).add(TopicGetAll(widget.meeting));
     }
 
     if (state is TopicDeleteSuccess) {
