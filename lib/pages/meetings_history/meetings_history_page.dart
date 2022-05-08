@@ -35,7 +35,7 @@ class _MeetingsHistoryState extends State<MeetingHistoryPage> {
       ],
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("History meetings page"),
+          title: const Text("Istoric sedinte"),
           centerTitle: true,
         ),
         body: BlocBuilder<MeetingsHistoryBloc, MeetingsHistoryState>(

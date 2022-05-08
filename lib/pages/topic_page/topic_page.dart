@@ -77,7 +77,7 @@ class _TopicState extends State<TopicPage> {
         ],
         child: Scaffold(
           appBar: AppBar(
-            title: const Text("Topics in meeting"),
+            title: const Text("Topicuri"),
             centerTitle: true,
           ),
           floatingActionButton: Row(
@@ -151,6 +151,9 @@ class _TopicState extends State<TopicPage> {
                   child: ListView.builder(
                     itemCount: topics.length,
                     itemBuilder: (context, index) {
+                      if (topics[index].content == "xx") {
+                        return Container();
+                      }
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                         child: TopicCard(

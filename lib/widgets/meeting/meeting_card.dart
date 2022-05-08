@@ -146,7 +146,7 @@ class _MeetingCardState extends State<MeetingCard> {
                           onPressed: () {
                             BlocProvider.of<ParticipationBloc>(context).add(JoinMeeting(widget.meeting));
                           },
-                          child: const Text('Join'),
+                          child: const Text('Participă'),
                         ),
                       ],
                     ),

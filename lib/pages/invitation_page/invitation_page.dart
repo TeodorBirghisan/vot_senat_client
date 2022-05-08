@@ -119,61 +119,64 @@ class _InvitationFormState extends State<InvitationForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(height: 32),
-          if (null != fields)
-            ...fields.map((field) {
-              var controller = controllers.putIfAbsent(
-                field.dataKey,
-                () {
-                  return TextEditingController();
-                },
-              );
-              return Column(
-                children: [
-                  Text(field.label),
-                  const SizedBox(height: 4),
-                  TextFormField(
-                    controller: controller,
-                    validator: field.validator,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      hintText: field.hintText,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 32),
+            if (null != fields)
+              ...fields.map((field) {
+                var controller = controllers.putIfAbsent(
+                  field.dataKey,
+                  () {
+                    return TextEditingController();
+                  },
+                );
+                return Column(
+                  children: [
+                    Text(field.label),
+                    const SizedBox(height: 4),
+                    TextFormField(
+                      controller: controller,
+                      validator: field.validator,
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        hintText: field.hintText,
+                      ),
+                      obscureText: field.isPassword ?? false,
                     ),
-                    obscureText: field.isPassword ?? false,
+                    const SizedBox(height: 8),
+                  ],
+                );
+              }),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: const Size(300, 50),
+                    primary: Colors.black87,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
                   ),
-                  const SizedBox(height: 8),
-                ],
-              );
-            }),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(300, 50),
-                  primary: Colors.black87,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      BlocProvider.of<InvitationBloc>(context).add(
+                        InviteUser(controllers['email']!.text),
+                      );
+                    }
+                  },
+                  child: const Text('Invită'),
                 ),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    BlocProvider.of<InvitationBloc>(context).add(
-                      InviteUser(controllers['email']!.text),
-                    );
-                  }
-                },
-                child: const Text('INVITE'),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

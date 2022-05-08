@@ -54,7 +54,7 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            title: const Text("Available meetings page"),
+            title: const Text("Sedinte"),
             centerTitle: true,
             actions: [
               PopupMenuButton<String>(
@@ -135,19 +135,19 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
-                label: 'Meetings',
+                label: 'Sedinte',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.add),
-                label: 'Create',
+                label: 'Adauga',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.history),
-                label: 'History',
+                label: 'Istoric',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.send),
-                label: 'Invite',
+                label: 'Invitatie',
               ),
             ],
             currentIndex: 0,
