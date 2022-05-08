@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
 import 'package:vot_senat_client/bloc/invitation_bloc/invitation_event.dart';
 import 'package:vot_senat_client/bloc/invitation_bloc/invitation_state.dart';
-import 'package:vot_senat_client/bloc/user_bloc/user_event.dart';
 import 'package:vot_senat_client/service/invitation_sevice.dart';
 
 class InvitationBloc extends Bloc<InvitationEvent, InvitationState> {

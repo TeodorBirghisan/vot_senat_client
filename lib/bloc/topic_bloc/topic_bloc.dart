@@ -32,8 +32,7 @@ class TopicBloc extends Bloc<TopicEvent, TopicState> {
   FutureOr<void> _onCreate(TopicCreate event, Emitter<TopicState> emit) async {
     emit(TopicCreateLoading());
 
-    Response response =
-        await TopicService.instance.create(event.topic, event.meeting);
+    Response response = await TopicService.instance.create(event.topic, event.meeting);
 
     if (response.statusCode == HttpStatus.created) {
       Topic data = TopicService.instance.deserializeOne(response);
@@ -46,8 +45,7 @@ class TopicBloc extends Bloc<TopicEvent, TopicState> {
   FutureOr<void> _onDelete(TopicDelete event, Emitter<TopicState> emit) async {
     emit(TopicDeleteLoading());
 
-    Response response =
-        await TopicService.instance.deleteOne(event.topicId, event.meetingId);
+    Response response = await TopicService.instance.deleteOne(event.topicId, event.meetingId);
 
     if (response.statusCode == HttpStatus.ok) {
       int? data = TopicService.instance.deserializeId(response);

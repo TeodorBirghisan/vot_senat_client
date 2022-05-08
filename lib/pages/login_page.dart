@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vot_senat_client/bloc/invitation_bloc/invitation_bloc.dart';
+import 'package:vot_senat_client/bloc/invitation_bloc/invitation_event.dart';
 import 'package:vot_senat_client/widgets/login/login_form.dart';
 
 class LoginPage extends StatelessWidget {
@@ -19,6 +22,7 @@ class LoginPage extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
+                BlocProvider.of<InvitationBloc>(context).add(ResetInvitation());
                 Navigator.of(context).pushNamed("/signup-invitation");
               },
               child: Padding(

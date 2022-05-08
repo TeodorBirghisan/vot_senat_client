@@ -45,7 +45,7 @@ class InvitationSignupPage extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text("Invitatia a fost trimisa cu success"),
+                          Text("Inregistrarea a fost facuta cu success"),
                           const SizedBox(height: 16),
                           Icon(
                             Icons.check_circle_outline,

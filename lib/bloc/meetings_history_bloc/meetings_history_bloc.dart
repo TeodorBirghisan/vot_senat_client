@@ -17,7 +17,7 @@ class MeetingsHistoryBloc extends Bloc<MeetingsHistoryEvent, MeetingsHistoryStat
 
     Response response = await MeetingsService.instance.getAllHistory();
 
-    if (0 == 0) {
+    if (response.statusCode == 200) {
       List<Meeting> data = MeetingsService.instance.deserializeAll(response);
       emit(MeetingsHistoryGetAllSuccess(data));
     } else {
