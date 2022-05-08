@@ -2,6 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefsKeys {
   static const String token = 'TOKEN';
+  static const String role = 'ROLE';
 }
 
 class SharedPrefHandler {
@@ -30,5 +31,22 @@ class SharedPrefHandler {
 
   String? get token {
     return _prefs!.getString(SharedPrefsKeys.token);
+  }
+
+  set role(String? role) {
+    if (role != null) {
+      _prefs!.setString(SharedPrefsKeys.role, role);
+      return;
+    }
+
+    throw 'Token should not be null';
+  }
+
+  void removeRole() {
+    _prefs!.remove(SharedPrefsKeys.role);
+  }
+
+  String? get role {
+    return _prefs!.getString(SharedPrefsKeys.role);
   }
 }

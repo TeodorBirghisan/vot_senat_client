@@ -22,6 +22,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
     if (response.statusCode == HttpStatus.created) {
       SharedPrefHandler.instance.token = json.decode(response.body)['accessToken'];
+      SharedPrefHandler.instance.role = json.decode(response.body)['role'];
       emit(UserAuthenticated());
     } else {
       emit(UserNotAuthenticated());
