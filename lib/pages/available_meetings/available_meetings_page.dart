@@ -70,9 +70,10 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
                       return Text("Neautentificat");
                     }),
                   ),
-                  const PopupMenuItem<String>(
+                  PopupMenuItem<String>(
                     value: "Logout",
                     child: Text('Logout'),
+                    onTap: () => BlocProvider.of<UserBloc>(context).add(LogoutUser()),
                   ),
                 ],
               ),
