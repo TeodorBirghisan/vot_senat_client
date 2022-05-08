@@ -29,7 +29,7 @@ class Topic {
       yes: _hasVotes(json, VoteValues.yes) ? json["votes"][VoteValues.yes] : 0,
       no: _hasVotes(json, VoteValues.no) ? json["votes"][VoteValues.no] : 0,
       abtain: _hasVotes(json, VoteValues.abtain) ? json["votes"][VoteValues.abtain] : 0,
-      usersWhoVoted: json["usersWhoVoted"] != null ? jsonDecode(json["usersWhoVoted"]) as List<int> : [],
+      usersWhoVoted: json["usersWhoVotes"] != null ? json["usersWhoVotes"].cast<int>() : [],
     );
   }
 

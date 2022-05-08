@@ -21,8 +21,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     Response response = await UserService.instance.login(event.email, event.password);
 
     if (response.statusCode == HttpStatus.created) {
-      SharedPrefHandler.instance.token = json.decode(response.body)['accessToken'];
-      SharedPrefHandler.instance.role = json.decode(response.body)['role'];
+      var jsonBody = json.decode(response.body);
+      SharedPrefHandler.instance.token = jsonBody['accessToken'];
+      SharedPrefHandler.instance.role = jsonBody['role'];
+      SharedPrefHandler.instance.userId = jsonBody['userId'];
       emit(UserAuthenticated());
     } else {
       emit(UserNotAuthenticated());
@@ -35,6 +37,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   FutureOr<void> _onLogout(LogoutUser event, Emitter<UserState> emit) async {
     SharedPrefHandler.instance.removeToken();
+    SharedPrefHandler.instance.removeRole();
+    SharedPrefHandler.instance.removeUserId();
     emit(UserNotAuthenticated());
   }
 }

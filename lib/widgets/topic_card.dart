@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/src/provider.dart';
 import 'package:vot_senat_client/bloc/topic_bloc/topic_bloc.dart';
 import 'package:vot_senat_client/bloc/topic_bloc/topic_event.dart';
 import 'package:vot_senat_client/handlers/role_handler.dart';
+import 'package:vot_senat_client/handlers/shared_pref_handler.dart';
 import 'package:vot_senat_client/model/topic.dart';
 import 'package:vot_senat_client/service/vote_service.dart';
 import 'package:vot_senat_client/utils/roles.dart';
@@ -11,12 +13,14 @@ class TopicCard extends StatefulWidget {
   final Topic topic;
   final int meetingId;
   final bool isReadonly;
+  final bool isEditMode;
 
   const TopicCard({
     Key? key,
     required this.topic,
     required this.meetingId,
     required this.isReadonly,
+    required this.isEditMode,
   }) : super(key: key);
 
   @override
@@ -54,7 +58,7 @@ class _TopicCardState extends State<TopicCard> {
                       ],
                     ),
                   ),
-                  if (RoleHandler.instance.check([Roles.ADMIN, Roles.PRESIDENT]))
+                  if (RoleHandler.instance.check([Roles.ADMIN, Roles.PRESIDENT]) && !widget.isReadonly)
                     Material(
                       color: Colors.red,
                       borderRadius: BorderRadius.circular(24),
@@ -122,14 +126,17 @@ class _TopicCardState extends State<TopicCard> {
                   )
                 ],
               ),
-              const Divider(),
-              if (!widget.isReadonly)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: _TopicBottomSection(
-                    topic: widget.topic,
+              if (widget.isEditMode != true) ...[
+                const Divider(),
+                if (!widget.isReadonly && !widget.topic.usersWhoVoted!.contains(SharedPrefHandler.instance.userId))
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: _TopicBottomSection(
+                      topic: widget.topic,
+                      meetingId: widget.meetingId,
+                    ),
                   ),
-                ),
+              ]
             ],
           ),
         ),
@@ -195,10 +202,12 @@ class InfoIndicator extends StatelessWidget {
 
 class _TopicBottomSection extends StatelessWidget {
   final Topic topic;
+  final int meetingId;
 
   const _TopicBottomSection({
     Key? key,
     required this.topic,
+    required this.meetingId,
   }) : super(key: key);
 
   @override
@@ -264,7 +273,9 @@ class _TopicBottomSection extends StatelessWidget {
           color: Colors.green,
           borderRadius: BorderRadius.circular(10),
           child: InkWell(
-            onTap: () => VoteService.instance.vote(topic.id!, VoteValues.yes),
+            onTap: () {
+              VoteService.instance.vote(topic.id!, VoteValues.yes);
+            },
             borderRadius: BorderRadius.circular(10),
             child: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),

@@ -159,6 +159,7 @@ class _TopicState extends State<TopicPage> {
                         child: TopicCard(
                           meetingId: widget.meeting.id!,
                           topic: topics[index],
+                          isEditMode: widget.isEditMode ?? false,
                           isReadonly: widget.isReadonly ?? false,
                         ),
                       );
