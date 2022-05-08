@@ -9,10 +9,12 @@ import 'package:vot_senat_client/bloc/meetings_bloc/meetings_bloc.dart';
 import 'package:vot_senat_client/bloc/meetings_bloc/meetings_event.dart';
 import 'package:vot_senat_client/bloc/participation_bloc/participation_bloc.dart';
 import 'package:vot_senat_client/bloc/participation_bloc/participation_event.dart';
+import 'package:vot_senat_client/handlers/role_handler.dart';
 import 'package:vot_senat_client/model/meeting.dart';
 import 'package:vot_senat_client/pages/topic_page/topic_page.dart';
 import 'package:intl/intl.dart';
 import 'package:vot_senat_client/service/meetings_service.dart';
+import 'package:vot_senat_client/utils/roles.dart';
 
 class MeetingCard extends StatefulWidget {
   final Meeting meeting;
@@ -65,48 +67,49 @@ class _MeetingCardState extends State<MeetingCard> {
                       ],
                     ),
                   ),
-                  Material(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(24),
-                    child: InkWell(
+                  if (RoleHandler.instance.check([Roles.ADMIN, Roles.PRESIDENT]))
+                    Material(
+                      color: Colors.red,
                       borderRadius: BorderRadius.circular(24),
-                      child: const Padding(
-                        padding: EdgeInsets.all(6.0),
-                        child: Icon(
-                          Icons.delete,
-                          color: Colors.white,
-                          size: 18,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(24),
+                        child: const Padding(
+                          padding: EdgeInsets.all(6.0),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                            size: 18,
+                          ),
                         ),
-                      ),
-                      onTap: () => showDialog(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                          title: Text('Delete ${widget.meeting.title} ?'),
-                          content: const Text('Are you sure you want to delete?'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, 'Cancel'),
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                MeetingsEvent event = MeetingsDeleteOne(widget.meeting.id!);
-                                context.read<MeetingsBloc>().add(event);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    backgroundColor: Colors.green,
-                                    content: Text('Processing Data'),
-                                  ),
-                                );
-                                Navigator.pop(context, 'OK');
-                              },
-                              child: const Text('OK'),
-                            ),
-                          ],
+                        onTap: () => showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: Text('Delete ${widget.meeting.title} ?'),
+                            content: const Text('Are you sure you want to delete?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, 'Cancel'),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  MeetingsEvent event = MeetingsDeleteOne(widget.meeting.id!);
+                                  context.read<MeetingsBloc>().add(event);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      backgroundColor: Colors.green,
+                                      content: Text('Processing Data'),
+                                    ),
+                                  );
+                                  Navigator.pop(context, 'OK');
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -151,37 +154,36 @@ class _MeetingCardState extends State<MeetingCard> {
                       ],
                     ),
                   ),
-
-                //TODO hide to some users
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.greenAccent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => TopicPage(
-                                meeting: widget.meeting,
-                                isEditMode: true,
-                              ),
+                if (RoleHandler.instance.check([Roles.ADMIN, Roles.PRESIDENT]))
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.greenAccent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
                             ),
-                            (route) => false,
-                          );
-                        },
-                        child: const Text('Creeaza topicuri'),
-                      ),
-                    ],
+                          ),
+                          onPressed: () {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TopicPage(
+                                  meeting: widget.meeting,
+                                  isEditMode: true,
+                                ),
+                              ),
+                              (route) => false,
+                            );
+                          },
+                          child: const Text('Creeaza topicuri'),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
               ],
             )
           ],

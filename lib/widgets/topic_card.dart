@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 import 'package:vot_senat_client/bloc/topic_bloc/topic_bloc.dart';
 import 'package:vot_senat_client/bloc/topic_bloc/topic_event.dart';
+import 'package:vot_senat_client/handlers/role_handler.dart';
 import 'package:vot_senat_client/model/topic.dart';
 import 'package:vot_senat_client/service/vote_service.dart';
+import 'package:vot_senat_client/utils/roles.dart';
 
 class TopicCard extends StatefulWidget {
   final Topic topic;
@@ -52,47 +54,48 @@ class _TopicCardState extends State<TopicCard> {
                       ],
                     ),
                   ),
-                  Material(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(24),
-                    child: InkWell(
+                  if (RoleHandler.instance.check([Roles.ADMIN, Roles.PRESIDENT]))
+                    Material(
+                      color: Colors.red,
                       borderRadius: BorderRadius.circular(24),
-                      child: const Padding(
-                        padding: EdgeInsets.all(6.0),
-                        child: Icon(
-                          Icons.delete,
-                          color: Colors.white,
-                          size: 18,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(24),
+                        child: const Padding(
+                          padding: EdgeInsets.all(6.0),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                            size: 18,
+                          ),
                         ),
-                      ),
-                      onTap: () => showDialog(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                          title: Text('Delete ${widget.topic.content} ?'),
-                          content: const Text('Are you sure you want to delete?'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, 'Cancel'),
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                TopicEvent event = TopicDelete(widget.topic.id!, widget.meetingId);
-                                context.read<TopicBloc>().add(event);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Se sterge...'),
-                                  ),
-                                );
-                                Navigator.pop(context, 'OK');
-                              },
-                              child: const Text('OK'),
-                            ),
-                          ],
+                        onTap: () => showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: Text('Delete ${widget.topic.content} ?'),
+                            content: const Text('Are you sure you want to delete?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, 'Cancel'),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  TopicEvent event = TopicDelete(widget.topic.id!, widget.meetingId);
+                                  context.read<TopicBloc>().add(event);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Se sterge...'),
+                                    ),
+                                  );
+                                  Navigator.pop(context, 'OK');
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
               const SizedBox(height: 24),

@@ -11,10 +11,13 @@ import 'package:vot_senat_client/bloc/participation_bloc/participation_state.dar
 import 'package:vot_senat_client/bloc/user_bloc/user_bloc.dart';
 import 'package:vot_senat_client/bloc/user_bloc/user_event.dart';
 import 'package:vot_senat_client/bloc/user_bloc/user_state.dart';
+import 'package:vot_senat_client/handlers/role_handler.dart';
+import 'package:vot_senat_client/handlers/shared_pref_handler.dart';
 import 'package:vot_senat_client/model/meeting.dart';
 import 'package:vot_senat_client/pages/invitation_page/invitation_page.dart';
 import 'package:vot_senat_client/pages/meetings_history/meetings_history_page.dart';
 import 'package:vot_senat_client/pages/topic_page/topic_page.dart';
+import 'package:vot_senat_client/utils/roles.dart';
 import 'package:vot_senat_client/widgets/meeting/meeting_card.dart';
 import 'create_meeting_dialog.dart';
 
@@ -28,12 +31,42 @@ class AvailableMeetingsPage extends StatefulWidget {
 class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
   late List<Meeting> meetings;
   late Timer _getMeetingsTimer;
+  late List<Function()> _bottomNavigatorOptions;
 
   @override
   void initState() {
     super.initState();
 
     meetings = [];
+    //TODO add this to a method
+    _bottomNavigatorOptions = [];
+    _bottomNavigatorOptions.add(() => null);
+
+    if (RoleHandler.instance.check([Roles.ADMIN, Roles.PRESIDENT])) {
+      _bottomNavigatorOptions.add(
+        () => showDialog(
+          context: context,
+          builder: (BuildContext context) => const CreateMeetingDialog(),
+        ),
+      );
+    }
+
+    _bottomNavigatorOptions.add(
+      () => showDialog(
+        context: context,
+        builder: (BuildContext context) => const MeetingHistoryPage(),
+      ),
+    );
+
+    if (RoleHandler.instance.check([Roles.ADMIN, Roles.PRESIDENT])) {
+      _bottomNavigatorOptions.add(
+        () => showDialog(
+          context: context,
+          builder: (BuildContext context) => const InvitationPage(),
+        ),
+      );
+    }
+
     BlocProvider.of<MeetingsBloc>(context).add(MeetingsGetAll());
     _getMeetingsTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
       BlocProvider.of<MeetingsBloc>(context).add(MeetingsGetAll());
@@ -133,46 +166,33 @@ class _AvailableMeetingsState extends State<AvailableMeetingsPage> {
             );
           }),
           bottomNavigationBar: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
+            items: <BottomNavigationBarItem>[
+              const BottomNavigationBarItem(
                 icon: Icon(Icons.home),
                 label: 'Sedinte',
               ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.add),
-                label: 'Adauga',
-              ),
-              BottomNavigationBarItem(
+              if (RoleHandler.instance.check([Roles.ADMIN, Roles.PRESIDENT]))
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.add),
+                  label: 'Adauga',
+                ),
+              const BottomNavigationBarItem(
                 icon: Icon(Icons.history),
                 label: 'Istoric',
               ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.send),
-                label: 'Invitatie',
-              ),
+              if (RoleHandler.instance.check([Roles.ADMIN, Roles.PRESIDENT]))
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.send),
+                  label: 'Invitatie',
+                ),
             ],
             currentIndex: 0,
             type: BottomNavigationBarType.fixed,
             selectedItemColor: Colors.amber[800],
             unselectedItemColor: Colors.black,
             onTap: (index) {
-              if (index == 1) {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) => const CreateMeetingDialog(),
-                );
-              }
-              if (index == 2) {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) => const MeetingHistoryPage(),
-                );
-              }
-              if (index == 3) {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) => const InvitationPage(),
-                );
+              if (index < _bottomNavigatorOptions.length) {
+                _bottomNavigatorOptions[index]();
               }
             },
           ),
