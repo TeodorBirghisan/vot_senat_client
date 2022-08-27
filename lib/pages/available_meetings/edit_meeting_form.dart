@@ -149,7 +149,7 @@ class _EditMeetingFormState extends State<EditMeetingForm> {
                     );
                   }
                 },
-                child: const Text('Save'),
+                child: const Text('Salveaza'),
               ),
             ],
           );

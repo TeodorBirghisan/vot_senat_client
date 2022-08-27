@@ -22,7 +22,7 @@ class _CreateMeetingDialogState extends State<CreateMeetingDialog> {
       child: Scaffold(
         appBar: AppBar(
           // title: Text(widget.metting != null ? "Edit Meeting" : "Add Meeting"),
-          title: const Text("Add Meeting"),
+          title: const Text("Adaugă ședintă"),
         ),
         body: const SingleChildScrollView(
           child: Padding(

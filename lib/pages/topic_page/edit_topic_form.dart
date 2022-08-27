@@ -123,7 +123,7 @@ class _EditTopicFormState extends State<EditTopicForm> {
                 );
               }
             },
-            child: const Text('Save'),
+            child: const Text('Salvează'),
           ),
         ],
       ),
