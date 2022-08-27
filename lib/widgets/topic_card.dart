@@ -1,14 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/src/provider.dart';
+import 'package:vot_senat_client/bloc/topic_bloc/topic_bloc.dart';
+import 'package:vot_senat_client/bloc/topic_bloc/topic_event.dart';
+import 'package:vot_senat_client/handlers/role_handler.dart';
+import 'package:vot_senat_client/handlers/shared_pref_handler.dart';
 import 'package:vot_senat_client/model/topic.dart';
+import 'package:vot_senat_client/service/vote_service.dart';
+import 'package:vot_senat_client/utils/roles.dart';
 
-class TopicCard extends StatelessWidget {
+class TopicCard extends StatefulWidget {
   final Topic topic;
+  final int meetingId;
+  final bool isReadonly;
+  final bool isEditMode;
 
   const TopicCard({
     Key? key,
     required this.topic,
+    required this.meetingId,
+    required this.isReadonly,
+    required this.isEditMode,
   }) : super(key: key);
 
+  @override
+  State<TopicCard> createState() => _TopicCardState();
+}
+
+class _TopicCardState extends State<TopicCard> {
   @override
   Widget build(BuildContext context) {
     return PhysicalModel(
@@ -21,60 +40,255 @@ class TopicCard extends StatelessWidget {
           color: Colors.white,
         ),
         clipBehavior: Clip.hardEdge,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-              child: Text(
-                topic.content ?? "",
-                textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.subtitle2,
-              ),
-            ),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Row(
                 children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.redAccent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                  Expanded(
+                    child: Wrap(
+                      children: [
+                        Text(
+                          widget.topic.content ?? "",
+                          textAlign: TextAlign.left,
+                          overflow: TextOverflow.visible,
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (RoleHandler.instance.check([Roles.ADMIN, Roles.PRESIDENT]) && !widget.isReadonly)
+                    Material(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(24),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(24),
+                        child: const Padding(
+                          padding: EdgeInsets.all(6.0),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        ),
+                        onTap: () => showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: Text('Delete ${widget.topic.content} ?'),
+                            content: const Text('Are you sure you want to delete?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, 'Cancel'),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  TopicEvent event = TopicDelete(widget.topic.id!, widget.meetingId);
+                                  context.read<TopicBloc>().add(event);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Se sterge...'),
+                                    ),
+                                  );
+                                  Navigator.pop(context, 'OK');
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Se sterge...'),
-                        ),
-                      );
-                    },
-                    child: const Text('Sterge'),
-                  ),
-                  const SizedBox(width: 8),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.blueAccent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Topicul a intrat in votare...'),
-                          ),
-                        );
-                      },
-                      child: const Text('Activeaza')),
                 ],
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  InfoIndicator(
+                    label: "Nu",
+                    labelIcon: Icons.cancel_outlined,
+                    labelColor: Colors.red,
+                    value: '${widget.topic.no!}',
+                  ),
+                  InfoIndicator(
+                    label: "Ma Abtin",
+                    labelIcon: Icons.info_outline,
+                    labelColor: Colors.orange,
+                    value: '${widget.topic.abtain!}',
+                  ),
+                  InfoIndicator(
+                    label: "Da",
+                    labelIcon: Icons.check_circle_outline,
+                    labelColor: Colors.green,
+                    value: '${widget.topic.yes!}',
+                  )
+                ],
+              ),
+              if (widget.isEditMode != true) ...[
+                const Divider(),
+                if (!widget.isReadonly && !widget.topic.usersWhoVoted!.contains(SharedPrefHandler.instance.userId))
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: _TopicBottomSection(
+                      topic: widget.topic,
+                      meetingId: widget.meetingId,
+                    ),
+                  ),
+              ]
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class InfoIndicator extends StatelessWidget {
+  final IconData? labelIcon;
+  final Color? labelColor;
+  final String? label;
+  final String value;
+
+  const InfoIndicator({
+    Key? key,
+    this.labelIcon,
+    this.labelColor,
+    this.label,
+    required this.value,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        if (label != null)
+          Row(
+            children: [
+              if (labelIcon != null) ...[
+                Icon(
+                  labelIcon,
+                  color: labelColor ?? Colors.black,
+                  size: Theme.of(context).textTheme.bodyText1?.fontSize,
+                ),
+                const SizedBox(width: 4),
+              ],
+              if (label != null)
+                Text(
+                  label!,
+                  style: TextStyle(
+                    color: labelColor ?? Colors.black,
+                  ),
+                ),
+            ],
+          ),
+        const SizedBox(height: 4),
+        Row(
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: Theme.of(context).textTheme.subtitle1?.fontSize,
               ),
             ),
           ],
+        )
+      ],
+    );
+  }
+}
+
+class _TopicBottomSection extends StatelessWidget {
+  final Topic topic;
+  final int meetingId;
+
+  const _TopicBottomSection({
+    Key? key,
+    required this.topic,
+    required this.meetingId,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (topic.isActive!) {
+      return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Colors.blueAccent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
         ),
-      ),
+        onPressed: () {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Topicul a intrat in votare...'),
+            ),
+          );
+        },
+        child: const Text("Activeaza"),
+      );
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Material(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(10),
+          child: InkWell(
+            onTap: () => VoteService.instance.vote(topic.id!, VoteValues.no),
+            borderRadius: BorderRadius.circular(10),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
+              child: Text(
+                "Nu",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Material(
+          color: Colors.orange,
+          borderRadius: BorderRadius.circular(10),
+          child: InkWell(
+            onTap: () => VoteService.instance.vote(topic.id!, VoteValues.abtain),
+            borderRadius: BorderRadius.circular(10),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Text(
+                "Ma abtin",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Material(
+          color: Colors.green,
+          borderRadius: BorderRadius.circular(10),
+          child: InkWell(
+            onTap: () {
+              VoteService.instance.vote(topic.id!, VoteValues.yes);
+            },
+            borderRadius: BorderRadius.circular(10),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
+              child: Text(
+                "Da",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

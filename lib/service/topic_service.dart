@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
+import 'package:vot_senat_client/handlers/headers_handler.dart';
 import 'package:vot_senat_client/model/meeting.dart';
 import 'package:vot_senat_client/model/topic.dart';
 import 'package:vot_senat_client/utils/api.dart';
@@ -14,7 +15,10 @@ class TopicService {
     Uri url = Uri.parse("${Api.server}/topics/${meeting.id}");
 
     try {
-      Response response = await get(url);
+      Response response = await get(
+        url,
+        headers: HeadersHandler.createAuthToken(),
+      );
       return response;
     } on Exception {
       rethrow;
@@ -29,7 +33,24 @@ class TopicService {
       Response response = await post(
         url,
         body: topic.toJson(),
+        headers: HeadersHandler.createAuthToken(),
       );
+      return response;
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  Future<Response> deleteOne(int topicId, int meetingId) async {
+    Uri url = Uri.parse("${Api.server}/topics/$meetingId");
+
+    try {
+      Response response = await delete(
+        url,
+        body: json.encode(<String, int>{"topicId": topicId}),
+        headers: HeadersHandler.createAuthToken(),
+      );
+
       return response;
     } on Exception {
       rethrow;
@@ -44,5 +65,10 @@ class TopicService {
   Topic deserializeOne(Response response) {
     String body = response.body;
     return Topic.fromJson(json.decode(body));
+  }
+
+  int deserializeId(Response response) {
+    String body = response.body;
+    return json.decode(body);
   }
 }

@@ -35,7 +35,7 @@ class _EditTopicFormState extends State<EditTopicForm> {
     fields = [
       FormFieldData(
         dataKey: "content",
-        label: "Content",
+        label: "Topic Content",
         hintText: "",
         validator: FormValidators.notEmptyValidator,
       ),
@@ -67,20 +67,27 @@ class _EditTopicFormState extends State<EditTopicForm> {
                   return TextEditingController();
                 },
               );
-              return Column(
-                children: [
-                  Text(field.label),
-                  const SizedBox(height: 4),
-                  TextFormField(
-                    controller: controller,
-                    validator: field.validator,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      hintText: field.hintText,
-                    ),
+              return Center(
+                child: LayoutBuilder(
+                  builder: (context, constraints) => Column(
+                    children: [
+                      Text(field.label),
+                      const SizedBox(height: 4),
+                      Container(
+                        width: constraints.maxWidth < 450 ? constraints.maxWidth * 0.8 : constraints.maxWidth * 0.4,
+                        child: TextFormField(
+                          controller: controller,
+                          validator: field.validator,
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
+                            hintText: field.hintText,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
                   ),
-                  const SizedBox(height: 8),
-                ],
+                ),
               );
             }),
           const SizedBox(height: 8),
@@ -116,7 +123,7 @@ class _EditTopicFormState extends State<EditTopicForm> {
                 );
               }
             },
-            child: const Text('Save'),
+            child: const Text('Salvează'),
           ),
         ],
       ),

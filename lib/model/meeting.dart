@@ -18,7 +18,7 @@ class Meeting {
       id: json["id"],
       description: json["description"],
       title: json["title"],
-      startDate: DateTime.parse(json["startDate"] ?? DateTime.now().toIso8601String()),
+      startDate: DateTime.parse(json["startDate"] ?? DateTime.now().toIso8601String()).toLocal(),
       status: json["status"],
     );
   }
